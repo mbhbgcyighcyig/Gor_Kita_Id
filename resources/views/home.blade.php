@@ -3,7 +3,7 @@
 @section('title', 'Dashboard - GotKita.ID')
 
 @php
-    // DEFAULT VALUES JIKA VARIABLE TIDAK ADA
+    
     $stats = $stats ?? [
         'total_bookings' => 0,
         'active_bookings' => 0,
