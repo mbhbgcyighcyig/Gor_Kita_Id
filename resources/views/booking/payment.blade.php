@@ -75,11 +75,10 @@
                     </div>
 
                     <!-- Payment Form -->
-                    <!-- ✅ PERBAIKAN DI SINI: route('booking.payment.process') -->
                     <form action="{{ route('booking.payment.process', $booking->id) }}" method="POST" id="paymentForm">
                         @csrf
                         
-                        <!-- Bank Selection -->
+                        <!-- Bank -->
                         <div class="mb-8">
                             <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center border border-blue-400/30">
@@ -105,7 +104,7 @@
                                                 <i class="fas fa-university text-green-400 text-2xl"></i>
                                                 @elseif($bank == 'Mandiri')
                                                 <i class="fas fa-landmark text-yellow-400 text-2xl"></i>
-                                                @elseif($bank == 'BNI')
+                                                @elseif($bank == 'Dana')
                                                 <i class="fas fa-bank text-red-400 text-2xl"></i>
                                                 @else
                                                 <i class="fas fa-credit-card text-purple-400 text-2xl"></i>
@@ -122,7 +121,7 @@
                             </div>
                         </div>
 
-                        <!-- PIN Input -->
+                        <!-- PIN -->
                         <div class="mb-8">
                             <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center border border-red-400/30">
@@ -133,7 +132,7 @@
                             <div class="bg-white/5 rounded-2xl p-8 border border-white/10">
                                 <p class="text-gray-400 mb-6 text-center">Masukkan 6 digit PIN untuk mengkonfirmasi pembayaran</p>
                                 
-                                <!-- PIN Input Boxes -->
+                                <!-- PIN Input -->
                                 <div class="flex justify-center space-x-4 mb-8">
                                     @for($i = 1; $i <= 6; $i++)
                                     <input type="password" 
@@ -145,7 +144,7 @@
                                 </div>
                                 <input type="hidden" name="pin" id="pinHidden">
                                 
-                                <!-- Demo Info -->
+                                <!-- Info Payment -->
                                 <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-2xl p-4 mb-6 border border-yellow-500/30">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-info-circle text-yellow-400 text-xl"></i>
@@ -187,7 +186,7 @@
                 </div>
             </div>
 
-            <!-- Right Column: Instructions -->
+            <!-- Instructions -->
             <div>
                 <div class="sticky top-8">
                     <!-- Instructions -->
@@ -250,7 +249,7 @@
                             </div>
                         </div>
                         
-                        <!-- Status Badge -->
+                        <!-- Status Bayar -->
                         <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                             <p class="text-gray-400 text-sm mb-1">Status Booking</p>
                             <p class="text-xl font-bold text-yellow-400">MENUNGGU PEMBAYARAN</p>
@@ -282,24 +281,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // PIN handling
+    // PIN handle
     pinBoxes.forEach(box => {
         box.addEventListener('input', function(e) {
             const index = parseInt(this.dataset.index);
             const value = this.value;
             
-            // Only numbers
+            // numbers
             if (!/^\d$/.test(value)) {
                 this.value = '';
                 return;
             }
             
-            // Add filled style
+            // Add Lapangan Style
             this.classList.add('filled');
             this.style.borderColor = '#10b981';
             this.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
             
-            // Move to next
+            // Selanjutnya
             if (value.length === 1 && index < 6) {
                 pinBoxes[index].focus();
             }
@@ -313,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (e.key === 'Backspace') {
                 if (this.value === '' && index > 1) {
-                    // Move to previous
+                 
                     pinBoxes[index - 2].focus();
                     pinBoxes[index - 2].value = '';
                     pinBoxes[index - 2].classList.remove('filled');
@@ -378,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Auto focus first PIN box
+    // Pin box
     setTimeout(() => {
         if (pinBoxes[0]) pinBoxes[0].focus();
     }, 500);
