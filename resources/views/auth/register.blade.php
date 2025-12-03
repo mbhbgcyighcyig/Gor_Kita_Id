@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - SportSpace Arena</title>
+    <title>Daftar - GorKita.ID</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -31,9 +31,9 @@
     </style>
 </head>
 <body class="sports-bg min-h-screen flex items-center justify-center p-4 overflow-hidden">
-    <!-- Animated Sports Elements -->
+    <!-- animasi sport -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <!-- Floating Balls -->
+        <!-- Futsal -->
         <div class="absolute top-20 left-10 w-12 h-12 bg-white rounded-full shadow-lg float-animation">
             <div class="w-full h-full bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
                 <div class="w-6 h-6 bg-white rounded-full opacity-20"></div>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <!-- Sports Icons -->
+        <!-- Icon-->
         <div class="absolute top-1/4 right-16 text-red-400/20 text-5xl spin-animation">
             <i class="fas fa-table-tennis-paddle-ball"></i>
         </div>
@@ -66,7 +66,6 @@
     <div class="relative w-full max-w-6xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
-            <!-- Left Side - Sports Showcase -->
             <div class="text-white space-y-8">
                 <!-- Logo & Brand -->
                 <div class="flex items-center space-x-4 mb-8">
@@ -149,7 +148,7 @@
                 </div>
             </div>
 
-            <!-- Right Side - Register Form -->
+            <!-- Register Form -->
             <div class="relative">
                 <!-- Form Container -->
                 <div class="bg-white rounded-3xl border-2 border-orange-400 shadow-2xl p-8 relative overflow-hidden">
@@ -192,7 +191,7 @@
                     <form method="POST" action="{{ route('auth.registrasi') }}" class="space-y-6 relative z-10">
                         @csrf
                         
-                        <!-- Name Input -->
+                        <!-- Nama Input -->
                         <div class="group">
                             <label class="block text-gray-800 text-sm font-bold mb-3 flex items-center space-x-2">
                                 <div class="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center border border-red-200">
@@ -293,7 +292,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Add hover effects to form inputs
+         
             const inputs = document.querySelectorAll('input');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
