@@ -211,7 +211,7 @@
                         <div class="relative mb-5 overflow-hidden rounded-2xl">
                           
                             @php
-                                // Ganti dengan gambar futsal milikmu
+                               
                                 $localFutsalImages = [
                                     asset('futsal/sal.jpg'),
                                     asset('futsal/2.jpg'),
@@ -429,7 +429,7 @@
                                 <span class="text-2xl font-black text-cyan-300">Rp {{ number_format($dummyField['price'], 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                            
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-cyan-500/30 text-sm">
                                 Booking Sekarang
@@ -506,7 +506,7 @@
                         $localDummySoccerFields = [
                             [
                                 'name' => 'Soccer Field Pro',
-                                'image' => asset('soccer/zz.jpg'), // 🖼️ Ganti dengan gambar mini soccer 1
+                                'image' => asset('soccer/zz.jpg'), 
                                 'price' => 200000,
                                 'capacity' => '7v7'
                             ],
@@ -552,7 +552,7 @@
                                 <span class="text-2xl font-black text-emerald-300">Rp {{ number_format($dummyField['price'], 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                           
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-emerald-500/30 text-sm">
                                 Booking sekarang
@@ -565,7 +565,7 @@
             </div>
         </div>
 
-        <!-- 🖼️ FOOTER DENGAN LOGO -->
+       
         <div class="mt-16 pt-8 border-t border-emerald-500/20">
             <div class="flex flex-col items-center justify-center text-center">
                 <img src="{{ asset('img/logo/logo-gorkita.png') }}" 
