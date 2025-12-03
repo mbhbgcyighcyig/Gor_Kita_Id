@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     
-                    <!-- Step 3: Current (Pending Verification) -->
+                    <!-- Step 3: Belum di confirm (Pending Verification) -->
                     <div class="flex items-start space-x-6">
                         <div class="relative">
                             <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center border-2 border-yellow-400 z-10 relative animate-pulse">
@@ -104,7 +104,7 @@
         </div>
 
         <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Left Column: Booking Details -->
+            <!-- Booking Details -->
             <div>
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-blue-500/20 backdrop-blur-sm h-full">
                     <h2 class="text-2xl font-black text-white mb-8 flex items-center space-x-3">
@@ -169,7 +169,7 @@
                 </div>
             </div>
 
-            <!-- Right Column: Payment Details -->
+            <!-- Payment Details -->
             <div>
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-purple-500/20 backdrop-blur-sm h-full">
                     <h2 class="text-2xl font-black text-white mb-8 flex items-center space-x-3">
@@ -180,7 +180,7 @@
                     </h2>
                     
                     <div class="space-y-6">
-                        <!-- Status Badge -->
+                        <!-- Status Bayar -->
                         <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-2xl p-6 border border-yellow-500/30">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4">
@@ -259,11 +259,11 @@
             </div>
         </div>
 
-        <!-- Instructions & Actions -->
+        <!-- Istruction -->
         <div class="mt-8">
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-yellow-500/20 backdrop-blur-sm">
                 <div class="grid lg:grid-cols-3 gap-8">
-                    <!-- Instructions -->
+                    <!-- Instruction -->
                     <div class="lg:col-span-2">
                         <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center border border-yellow-400/30">
@@ -315,7 +315,7 @@
                         </div>
                     </div>
                     
-                    <!-- Action Buttons -->
+                    <!-- Action Button -->
                     <div>
                         <div class="sticky top-8">
                             <div class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl p-6 border border-blue-500/20">
@@ -379,7 +379,7 @@
 function copyVA() {
     const vaNumber = '{{ $paymentData['va_number'] ?? '888' . str_pad($booking->id, 12, '0', STR_PAD_LEFT) }}';
     navigator.clipboard.writeText(vaNumber).then(() => {
-        // Show toast notification
+        // notif
         const toast = document.createElement('div');
         toast.className = 'fixed top-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-lg z-50 animate-fade-in';
         toast.innerHTML = `
@@ -397,13 +397,13 @@ function copyVA() {
 }
 
 function downloadReceipt() {
-    // Show loading
+    // loading
     const btn = event.currentTarget;
     const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Receipt...';
     btn.disabled = true;
     
-    // Simulate download
+    // dowanload 
     setTimeout(() => {
         alert('Receipt downloaded! (Demo mode)');
         btn.innerHTML = originalHTML;
@@ -411,7 +411,7 @@ function downloadReceipt() {
     }, 1500);
 }
 
-// Add fade-in animation
+// Animation fade
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fade-in {
@@ -431,7 +431,7 @@ document.head.appendChild(style);
     top: 2rem;
 }
 
-/* Custom scrollbar */
+/* scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
