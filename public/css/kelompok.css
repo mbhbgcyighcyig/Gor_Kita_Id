@@ -1,0 +1,117 @@
+/* ===== Reset & Font ===== */
+* { margin:0; padding:0; box-sizing:border-box; font-family: "Poppins", sans-serif; }
+html, body, #app { height:100%; }
+
+/* ===== Variables (colors) ===== */
+:root{
+  --bg: #f8f8f8;
+  --card: #ffffff;
+  --text: #222;
+  --muted: #777;
+  --accent: #ff3b3b; /* sporty red */
+  --accent-dark: #e02e2e;
+  --sidebar-bg: linear-gradient(180deg,#0f1113,#171719);
+  --radius: 12px;
+  --glass: rgba(255,255,255,0.06);
+}
+
+/* ===== Layout ===== */
+body {
+  display:flex;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+  width: 240px;
+  background: var(--sidebar-bg);
+  color: #ddd;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:22px;
+  gap:12px;
+}
+.sidebar .logo{
+  font-size:20px;
+  font-weight:800;
+  display:flex; align-items:center; gap:8px;
+  color:#fff;
+}
+.sidebar nav { margin-top:6px; display:flex; flex-direction:column; gap:8px; }
+.sidebar nav a{
+  color:#cfcfcf; text-decoration:none; padding:10px 12px; border-radius:10px; display:flex; align-items:center; gap:10px;
+  font-weight:600;
+}
+.sidebar nav a:hover { background: rgba(255,59,59,0.12); color:#fff; }
+.sidebar nav a.active { background: var(--accent); color:#fff; box-shadow:0 6px 16px rgba(255,59,59,0.15); }
+.sidebar .logout{
+  width:100%; padding:10px; border-radius:10px; border:none; background:var(--accent); color:#fff; font-weight:700; cursor:pointer;
+}
+
+/* Main content */
+.main-content{
+  flex:1; padding:28px; overflow:auto; height:100vh;
+}
+
+/* Topbar */
+.topbar{
+  display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px;
+}
+.topbar h1 { font-size:22px; font-weight:700; }
+.admin-info { display:flex; align-items:center; gap:12px; }
+.admin-info img { width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--accent); }
+
+/* Cards */
+.cards {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap:18px; margin-bottom:24px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius); padding:18px; display:flex; gap:14px; align-items:center;
+  box-shadow: 0 6px 18px rgba(20,20,20,0.04); transition:transform .18s, box-shadow .18s;
+}
+.card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(20,20,20,0.07); }
+.card .icon { font-size:28px; color:var(--accent); }
+
+/* Chart section */
+.chart-section { background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:0 6px 18px rgba(20,20,20,0.04); margin-bottom:20px; }
+.chart-section h2{ margin-bottom:12px; font-size:18px; }
+
+/* Table base */
+.data-table {
+  width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(20,20,20,0.03);
+}
+.data-table thead tr { background: linear-gradient(90deg,#fafafa,#f3f3f3); }
+.data-table th, .data-table td { padding:12px 14px; text-align:left; font-size:14px; border-bottom:1px solid #f1f1f1; color:var(--text); }
+.data-table tbody tr:hover { background: rgba(0,0,0,0.02); }
+.table-actions button { margin-right:6px; padding:6px 8px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+
+/* Status badges */
+.status { padding:6px 10px; border-radius:999px; font-weight:700; font-size:13px; display:inline-block; }
+.status.aktif { background: rgba(34,197,94,0.12); color:#22c55e; }
+.status.pending { background: rgba(245,158,11,0.12); color:#f59e0b; }
+.status.batal { background: rgba(239,68,68,0.08); color:#ef4444; }
+
+/* Buttons */
+.btn { display:inline-block; padding:8px 14px; border-radius:999px; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; border:none; cursor:pointer; }
+.btn.ghost { background:transparent; color:var(--accent); border:2px solid rgba(255,59,59,0.12); }
+
+/* Form / modal basic */
+.form-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+.input { padding:10px 12px; border-radius:8px; border:1px solid #e6e6e6; min-width:160px; }
+.add-btn { background:var(--accent); color:#fff; padding:9px 12px; border-radius:10px; border:none; cursor:pointer; }
+
+/* Footer */
+.footer { margin-top:20px; text-align:center; color:var(--muted); }
+
+/* Responsive */
+@media (max-width: 900px){
+  .sidebar{ display:none; } /* simple hiding for mobile — in real app use toggler */
+  body{ overflow:auto; }
+  .main-content{ padding:18px; }
+}
