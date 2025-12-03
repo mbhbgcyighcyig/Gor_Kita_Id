@@ -162,7 +162,7 @@
                     </div>
                 </div>
                 
-                <!-- Failed/Expired -->
+                <!-- Expired -->
                 <div class="stat-card bg-gradient-to-r from-red-500 to-pink-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
