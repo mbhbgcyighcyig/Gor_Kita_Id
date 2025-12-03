@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    <!-- Field -->
+                    <!-- Lapangan -->
                     <div class="bg-white/5 rounded-2xl p-4 border border-gray-700/50">
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
