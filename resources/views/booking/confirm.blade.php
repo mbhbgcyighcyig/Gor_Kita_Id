@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-4xl mx-auto px-4">
 
-        <!-- Header dengan Tombol Kembali -->
+        <!-- Header-->
         <div class="text-center mb-8 relative">
 
             <!-- Back Button -->
@@ -32,11 +32,11 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Left Column - Booking Details -->
+            <!--Booking Details -->
             <div class="lg:col-span-2">
                 <div class="glass-card rounded-3xl p-8 border border-emerald-500/20">
 
-                    <!-- Field Info -->
+                    <!-- Lapangan -->
                     <div class="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-2xl p-6 border border-emerald-500/30 mb-8">
                         <div class="flex items-center space-x-4">
                             <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -67,7 +67,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                            <!-- Date -->
+                            <!-- tanggal -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
 
-                            <!-- Duration -->
+                            <!-- Durasi -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
@@ -116,7 +116,7 @@
                                 </div>
                             </div>
 
-                            <!-- Field Type -->
+                            <!-- type lapangan -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-cyan-500/20 rounded-2xl flex items-center justify-center">
@@ -131,7 +131,7 @@
 
                         </div>
 
-                        <!-- Payment Notice -->
+                        <!-- Payment -->
                         <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-2xl p-4 border border-yellow-500/30 mt-6">
                             <div class="flex items-start space-x-3">
                                 <i class="fas fa-exclamation-circle text-yellow-400 text-xl mt-1"></i>
@@ -153,7 +153,7 @@
             <div class="lg:col-span-1">
                 <div class="sticky top-8 space-y-6">
 
-                    <!-- Order Summary -->
+                    <!-- Order -->
                     <div class="glass-card rounded-3xl p-6 border border-emerald-500/20">
                         <h3 class="text-xl font-black text-white mb-4">Ringkasan Pesanan</h3>
 
@@ -204,7 +204,7 @@
                             <input type="hidden" name="duration" value="{{ $duration }}">
                             <input type="hidden" name="total_price" value="{{ $totalPrice }}">
 
-                            <!-- Optional Notes -->
+                            <!-- notes -->
                             <div class="mb-4">
                                 <label class="block text-gray-400 text-sm font-semibold mb-2">
                                     Catatan (Opsional)
@@ -237,7 +237,7 @@
 
                     </div>
 
-                    <!-- Payment Steps -->
+                    <!-- Payment Step -->
                     <div class="glass-card rounded-3xl p-6 border border-cyan-500/20">
                         <h4 class="text-lg font-black text-white mb-4 flex items-center">
                             <i class="fas fa-credit-card text-cyan-400 mr-2"></i>
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.classList.add('opacity-70');
         btnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>MEMPROSES...';
         
-        // The form will submit normally
+      
     });
 });
 </script>
