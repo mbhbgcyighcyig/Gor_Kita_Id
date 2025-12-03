@@ -85,7 +85,7 @@
                     $totalBookings = \App\Models\Booking::count();
                     $todayBookings = \App\Models\Booking::whereDate('tanggal_booking', today())->count();
                     
-                    // ✅ PERBAIKI: Gunakan Lapangan bukan Field
+                
                     $weeklyBookings = \App\Models\Booking::whereBetween('tanggal_booking', [now()->startOfWeek(), now()->endOfWeek()])
                         ->where('status', 'confirmed')
                         ->with('lapangan') // ✅ GANTI: 'field' -> 'lapangan'
@@ -101,17 +101,17 @@
                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                 $duration = $start->diffInHours($end);
                                 
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
+                                /
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $calculatedPrice = $duration * $booking->lapangan->price_per_hour;
                                     $weeklyRevenue += $calculatedPrice;
                                 } else {
-                                    // ✅ PERBAIKI: Gunakan Lapangan model
+                                   
                                     $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                     $weeklyRevenue += $duration * $defaultPrice;
                                 }
                             } catch (\Exception $e) {
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
+                            
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $weeklyRevenue += $booking->lapangan->price_per_hour * 1;
                                 } else {
@@ -126,7 +126,7 @@
                     
                     // Hitung total pendapatan semua waktu
                     $allBookings = \App\Models\Booking::where('status', 'confirmed')
-                        ->with('lapangan') // ✅ GANTI: 'field' -> 'lapangan'
+                        ->with('lapangan')
                         ->get();
                     $totalRevenue = 0;
                     foreach ($allBookings as $booking) {
@@ -138,7 +138,7 @@
                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                 $duration = $start->diffInHours($end);
                                 
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
+                              
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $totalRevenue += $duration * $booking->lapangan->price_per_hour;
                                 } else {
@@ -227,7 +227,7 @@
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Booking Hari Ini</h3>
                     <div class="space-y-4">
                         @php
-                            // ✅ PERBAIKI: Gunakan lapangan bukan field
+                       
                             $todayBookingsList = \App\Models\Booking::with(['user', 'lapangan'])
                                 ->whereDate('tanggal_booking', today())
                                 ->orderBy('jam_mulai')
@@ -256,7 +256,7 @@
                                                         $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                         $duration = $start->diffInHours($end);
                                                         
-                                                        // ✅ PERBAIKI: Gunakan lapangan bukan field
+                                                     
                                                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                             $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                         } else {
@@ -303,7 +303,7 @@
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Booking Terbaru</h3>
                     <div class="space-y-4">
                         @php
-                            // ✅ PERBAIKI: Gunakan lapangan bukan field
+                       
                             $recentBookings = \App\Models\Booking::with(['user', 'lapangan'])
                                 ->latest()
                                 ->limit(5)
@@ -335,7 +335,7 @@
                                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                 $duration = $start->diffInHours($end);
                                                 
-                                                // ✅ PERBAIKI: Gunakan lapangan bukan field
+                                          
                                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                     $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                 } else {
