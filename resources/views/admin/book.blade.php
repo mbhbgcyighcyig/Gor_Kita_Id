@@ -183,7 +183,7 @@
                         </thead>
                         <tbody>
                             @php
-                                // ✅ PERBAIKAN: 'field' -> 'lapangan'
+                              
                                 $bookings = \App\Models\Booking::with(['user', 'lapangan'])
                                     ->orderBy('created_at', 'desc')
                                     ->get();
@@ -200,7 +200,7 @@
                                     <div class="text-sm text-gray-500">{{ $booking->user->email }}</div>
                                 </td>
                                 <td class="py-4 px-6">
-                                    <!-- ✅ PERBAIKAN: 'field' -> 'lapangan' -->
+                               
                                     @if($booking->lapangan)
                                         <p class="font-bold text-gray-800">{{ $booking->lapangan->name }}</p>
                                         <p class="text-gray-500 text-sm capitalize">{{ $booking->lapangan->type ?? 'Tidak diketahui' }}</p>
@@ -231,16 +231,15 @@
                                                     $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                     $duration = $start->diffInHours($end);
                                                     
-                                                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
+                                                  
                                                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                         $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                     } else {
-                                                        // ✅ PERBAIKAN: Lapangan bukan Field
                                                         $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                                         $displayPrice = $duration * $defaultPrice;
                                                     }
                                                 } catch (\Exception $e) {
-                                                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
+                                                  
                                                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                         $displayPrice = $booking->lapangan->price_per_hour * 1;
                                                     } else {
