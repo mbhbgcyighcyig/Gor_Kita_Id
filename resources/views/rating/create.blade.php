@@ -46,11 +46,11 @@
         @endif
 
         @php
-            // Logika dari controller disederhanakan untuk view
+            // Logika dari controller
             $canRate = true;
             $errorMessage = '';
             
-            // Validasi dari controller sudah dilakukan, tapi kita tampilkan ulang di view
+            // Validasi dari controller aman
             $userId = Auth::check() ? Auth::id() : session('user_id');
             
             if ($booking->user_id != $userId) {
@@ -65,13 +65,13 @@
                 $errorMessage = 'Hanya booking yang sudah selesai atau confirmed yang bisa diberi rating.';
             }
             
-            // Cek payment status untuk confirmed bookings
+            // Cek payment status untuk confirm booking
             if ($booking->status === 'confirmed' && $booking->payment_status !== 'paid') {
                 $canRate = false;
                 $errorMessage = 'Harap selesaikan pembayaran sebelum memberi rating.';
             }
             
-            // Cek waktu untuk confirmed bookings
+            // Cek waktu untuk confirmed booking
             if ($booking->status === 'confirmed') {
                 try {
                     $endTime = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $booking->jam_selesai);
@@ -123,7 +123,7 @@
                     <div class="flex items-center space-x-3">
                         <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
                             @php
-                                // Tentukan icon berdasarkan tipe lapangan
+                                // icon 
                                 $fieldType = strtolower($booking->lapangan->type ?? '');
                                 $fieldIcon = 'fa-running'; // default
                                 
@@ -216,7 +216,7 @@
                 </div>
             </div>
 
-            <!-- Right - Rating Form -->
+            <!-- rate -->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                 <h2 class="text-2xl font-black text-white mb-6 flex items-center">
                     <i class="fas fa-star text-yellow-400 mr-3"></i>
@@ -226,7 +226,7 @@
                 <form method="POST" action="{{ route('rating.store', $booking->id) }}">
                     @csrf
                     
-                    <!-- Rating Stars -->
+                    <!-- Rating Star -->
                     <div class="mb-8">
                         <label class="block text-gray-300 text-sm font-bold mb-4">
                             Berapa bintang untuk pengalaman Anda? *
@@ -251,7 +251,7 @@
                         @enderror
                     </div>
 
-                    <!-- Review Text -->
+                    <!-- Ulasan -->
                     <div class="mb-6">
                         <label for="review" class="block text-gray-300 text-sm font-bold mb-3">
                             <i class="fas fa-comment-dots text-cyan-400 mr-2"></i>
@@ -269,7 +269,7 @@
                         <p class="text-gray-400 text-sm mt-1">Maksimal 500 karakter</p>
                     </div>
 
-                    <!-- Submit Button -->
+                    <!-- Submit Buttom -->
                     <div class="mt-8">
                         <button type="submit"
                                 class="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 transform hover:-translate-y-1 border border-emerald-500/30 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -279,7 +279,7 @@
                         </button>
                     </div>
                     
-                    <!-- Cancel Button -->
+                    <!-- Cancel Buttom -->
                     <div class="mt-4 text-center">
                         <a href="{{ route('booking.my-bookings') }}" 
                            class="text-gray-400 hover:text-gray-300 transition inline-flex items-center space-x-2">
@@ -302,7 +302,7 @@ function setRating(rating) {
     document.getElementById('ratingValue').value = rating;
     document.getElementById('ratingText').textContent = rating + '.0';
     
-    // Update star display
+    // Update star 
     const stars = document.querySelectorAll('.rating-star');
     stars.forEach((star, index) => {
         const starIndex = index + 1;
@@ -315,7 +315,7 @@ function setRating(rating) {
         }
     });
     
-    // Enable/disable submit button
+    // Enable submit button
     const submitBtn = document.getElementById('submitBtn');
     if (rating > 0) {
         submitBtn.disabled = false;
@@ -324,11 +324,11 @@ function setRating(rating) {
     }
 }
 
-// Initialize with 5 stars
+//  5 star
 document.addEventListener('DOMContentLoaded', function() {
     setRating(5);
     
-    // Character counter for review
+    // jumlah text
     const reviewTextarea = document.getElementById('review');
     const charCounter = document.createElement('div');
     charCounter.className = 'text-gray-500 text-xs text-right mt-1';
@@ -348,9 +348,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     reviewTextarea.addEventListener('input', updateCharCounter);
-    updateCharCounter(); // Initial update
+    updateCharCounter(); // update ulasan
     
-    // Form validation
+    // Validasi
     const form = document.querySelector('form');
     form.addEventListener('submit', function(e) {
         const ratingValue = document.getElementById('ratingValue').value;
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...';
     });
     
-    // Star hover effect
+    // Star effect
     const stars = document.querySelectorAll('.rating-star');
     stars.forEach((star, index) => {
         star.addEventListener('mouseenter', () => {
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function showAlert(message, type = 'error') {
-        // Remove existing alert
+        // Remove 
         const existingAlert = document.querySelector('.custom-alert');
         if (existingAlert) existingAlert.remove();
         
