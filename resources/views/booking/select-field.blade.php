@@ -59,7 +59,7 @@
                     @endif
                 </a>
 
-                <!-- Mini Soccer - SUDAH DIPERBAIKI -->
+                <!-- Mini Soccer  -->
                 <a href="{{ route('booking.select-field', ['type' => 'minisoccer', 'date' => $selectedDate]) }}" 
                    class="group relative overflow-hidden rounded-3xl p-8 text-center transition-all duration-500 transform hover:-translate-y-3 border-2 backdrop-blur-sm
                           {{ $type == 'minisoccer' ? 'bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-emerald-500/40 scale-105' : 'bg-white/5 border-white/10 hover:border-emerald-500/30' }}">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <!-- Date Picker Form -->
+                <!-- Date Form -->
                 <form action="{{ route('booking.select-field', ['type' => $type]) }}" method="GET" class="flex flex-col sm:flex-row gap-4 items-center">
                     <div class="relative">
                         <input type="date" 
@@ -125,14 +125,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                 @foreach($fields as $field)
                 @php
-                    // Sistem gambar berdasarkan type lapangan
                     $fieldImage = null;
                     
-                    // Cek apakah ada gambar dari database
                     if (!empty($field->image) && file_exists(public_path($field->image))) {
                         $fieldImage = asset($field->image);
                     } else {
-                        // Fallback ke gambar lokal berdasarkan tipe
+
                         $localImages = [
                             'badminton' => [
                                 asset('badminton/bad1.jpg'),
@@ -156,7 +154,7 @@
                         $fieldImage = $imageList[$loop->index % count($imageList)];
                     }
                     
-                    // Tentukan ikon berdasarkan tipe
+                    // Tentukan ikon 
                     $fieldIcon = 'fa-running';
                     if ($type == 'badminton') {
                         $fieldIcon = 'fa-table-tennis-paddle-ball';
@@ -164,7 +162,7 @@
                         $fieldIcon = 'fa-futbol';
                     }
                     
-                    // Tentukan warna berdasarkan tipe
+                    // Tentukan warna 
                     $gradientFrom = 'from-emerald-500';
                     $gradientTo = 'to-cyan-500';
                     if ($type == 'futsal') {
@@ -174,7 +172,7 @@
                 @endphp
                 
                 <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-emerald-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-3 hover:border-emerald-500/40">
-                    <!-- Field Image -->
+                    <!-- Gambar Lap -->
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $fieldImage }}" 
                              alt="{{ $field->name }}"
@@ -198,7 +196,7 @@
                         </div>
                     </div>
 
-                    <!-- Field Info -->
+                    <!-- Info Lap -->
                     <div class="p-6">
                         <p class="text-gray-400 mb-6 leading-relaxed">
                             @if($field->description)
@@ -210,7 +208,7 @@
                             @endif
                         </p>
                         
-                        <!-- Field Details -->
+                        <!-- Detail Lap -->
                         <div class="space-y-3 mb-6">
                             @if($type == 'badminton')
                             <div class="flex items-center space-x-2 text-gray-300">
@@ -333,9 +331,8 @@
 </div>
 
 <script>
-    // Enhanced animations with stagger
     document.addEventListener('DOMContentLoaded', function() {
-        // Scroll animations with stagger
+        // Scroll animation
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -352,7 +349,7 @@
             });
         }, observerOptions);
 
-        // Observe all groups with stagger
+        
         document.querySelectorAll('.group').forEach((el, index) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
@@ -360,7 +357,7 @@
             observer.observe(el);
         });
 
-        // Add hover effects to cards
+  // efect
         const cards = document.querySelectorAll('.bg-gradient-to-br');
         cards.forEach(card => {
             card.addEventListener('mouseenter', function() {
