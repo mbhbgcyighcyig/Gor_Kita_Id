@@ -37,7 +37,7 @@
             </p>
         </div>
 
-        <!-- Login Form - KONDISIONAL -->
+        <!-- Login Form -->
         @isset($is_user_login)
             @if($is_user_login)
                 <!-- FORM USER LOGIN -->
@@ -168,7 +168,7 @@
                     </button>
                 </form>
 
-                <!-- Demo Credentials -->
+                <!-- creditboongan -->
                 <div class="mt-6 p-4 bg-gray-100 rounded-lg">
                     <p class="text-sm text-gray-600 font-bold mb-2">Default Admin:</p>
                     <p class="text-sm text-gray-600">Email: admin@gor.com</p>
@@ -186,7 +186,7 @@
                 </div>
             @endif
         @else
-            <!-- DEFAULT (Admin Login jika tidak ada parameter) -->
+            <!-- DEFAULT  -->
             <form method="POST" action="/admin/login">
                 @csrf
                 <!-- ... form admin login default ... -->
