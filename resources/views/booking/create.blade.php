@@ -87,7 +87,7 @@
                     @enderror
                 </div>
                 
-                <!-- Buttons -->
+                <!-- Button -->
                 <div class="flex space-x-3">
                     <a href="{{ route('booking.my-bookings') }}" 
                        class="flex-1 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-3 rounded-xl text-center transition-all duration-300 transform hover:-translate-y-1 border border-gray-600/30">
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Star click event
+    // click bintang
     stars.forEach(star => {
         star.addEventListener('click', function() {
             const value = this.getAttribute('for').replace('star', '');
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Star hover event
+    // Star hover
     stars.forEach(star => {
         star.addEventListener('mouseover', function() {
             const value = this.getAttribute('for').replace('star', '');
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Reset on mouse out
+    // Reset 
     document.getElementById('starRating').addEventListener('mouseleave', function() {
         const checkedInput = document.querySelector('input[name="rating"]:checked');
         if (checkedInput) {
