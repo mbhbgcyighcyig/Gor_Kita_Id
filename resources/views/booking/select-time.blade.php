@@ -31,10 +31,10 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Field Overview Card -->
+            <!-- Lapngan -->
             <div class="lg:w-1/3">
                 <div class="sticky top-8 space-y-6">
-                    <!-- Field Card -->
+                    <!-- Lihat Lap -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center space-x-4">
@@ -71,7 +71,7 @@
                         </div>
                     </div>
 
-                    <!-- Date Selector -->
+                    <!-- tgl -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-cyan-500/20 backdrop-blur-sm">
                         <div class="flex items-center space-x-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
@@ -99,7 +99,7 @@
                         </form>
                     </div>
 
-                    <!-- Availability Meter -->
+                    <!-- ketersediaan -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                         <h3 class="text-lg font-black text-white mb-4">Status Ketersediaan</h3>
                         <div class="space-y-4">
@@ -166,12 +166,12 @@
                 </div>
             </div>
 
-            <!-- Time Selection Area -->
+            <!-- waktu lap -->
             <div class="lg:w-2/3">
                 @if(count($availableSlots['available']) > 0)
-                    <!-- Time Slots Grid -->
+                    <!-- Time Slots  -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm">
-                        <!-- Time Slots Header -->
+                      
                         <div class="flex items-center justify-between mb-8">
                             <div>
                                 <h2 class="text-2xl font-black text-white">Pilihan Jam Tersedia</h2>
@@ -183,7 +183,7 @@
                             </div>
                         </div>
 
-                        <!-- Time Slots Grid - LOGIKA SIMPLE -->
+                        <!-- Time Slots -->
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             @foreach($availableSlots['all'] as $timeSlot)
                                 @php
@@ -259,7 +259,7 @@
                                         </div>
                                     @endif
 
-                                    <!-- Badge untuk slot kadaluarsa -->
+                                    <!-- slot kadaluarsa -->
                                     @if($isExpired)
                                         <div class="absolute -top-2 -right-2 bg-gradient-to-r from-gray-600 to-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full">
                                             <i class="fas fa-clock mr-1"></i>Lewat
@@ -311,7 +311,7 @@
                         </div>
                     </div>
                 @else
-                    <!-- No Slots Available -->
+                    <!-- tidak tersedia -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-12 border border-emerald-500/20 backdrop-blur-sm text-center">
                         <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-700/40 to-gray-800/40 rounded-3xl flex items-center justify-center border border-gray-600/50">
                             <i class="fas fa-ban text-gray-400 text-3xl"></i>
@@ -340,7 +340,7 @@
                     </div>
                 @endif
 
-                <!-- Tips Section -->
+                <!-- Tips Book-->
                 <div class="mt-6 bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 rounded-3xl p-6 border border-cyan-500/20 backdrop-blur-sm">
                     <div class="flex items-center space-x-3 mb-4">
                         <i class="fas fa-lightbulb text-cyan-400 text-xl"></i>
@@ -396,7 +396,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Animasi jam real-time */
+/* Animasi jam wib */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
@@ -411,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const options = { timeZone: 'Asia/Jakarta', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
         const timeString = now.toLocaleTimeString('id-ID', options);
         
-        // Update semua elemen dengan ID currentTimeWIB
         const elements = ['currentTimeWIB', 'currentTimeWIB2'];
         elements.forEach(id => {
             const element = document.getElementById(id);
@@ -425,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Update setiap detik
+    // waktu berjalan
     updateWIBTime();
     setInterval(updateWIBTime, 1000);
     
