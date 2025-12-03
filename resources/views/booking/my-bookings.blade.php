@@ -43,7 +43,7 @@
         </div>
 
         @if($bookings->isEmpty())
-            <!-- Empty State -->
+            <!-- belum booking -->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-12 text-center border border-emerald-500/20 backdrop-blur-sm max-w-2xl mx-auto">
                 <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-700/40 to-gray-800/40 rounded-3xl flex items-center justify-center border border-gray-600/50">
                     <i class="fas fa-calendar-times text-gray-400 text-4xl"></i>
@@ -58,18 +58,17 @@
             </div>
         @else
        
-            <!-- Bookings Grid -->
+            <!-- Bookings -->
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
                 @foreach($bookings as $booking)
                 @php
-                    // HITUNG HARGA DENGAN BENAR
+                    // harga
                     $totalPrice = $booking->total_price;
                     
-                    // Jika total_price kosong atau 0, hitung dari lapangan
                     if (!$totalPrice || $totalPrice == 0) {
                         $fieldPrice = $booking->lapangan ? $booking->lapangan->price_per_hour : 0;
                         
-                        // Hitung duration dari jam
+                        // Hitung durasi 
                         try {
                             $start = \Carbon\Carbon::parse($booking->jam_mulai);
                             $end = \Carbon\Carbon::parse($booking->jam_selesai);
@@ -81,13 +80,13 @@
                         $totalPrice = $fieldPrice * $duration;
                     }
                     
-                    // ====================== LOGIC RATING FIX ======================
+                    // ====================== Logika Rate ======================
                     $canRate = false;
                     $hasRating = false;
                     $ratingDebug = [];
                     
                     // Syarat untuk bisa rating:
-                    // 1. Status 'completed' (sudah selesai), ATAU
+                    // 1. Status 'completed' (sudah selesai)
                     // 2. Status 'confirmed' DAN waktu booking sudah lewat DAN payment_status 'paid'
                     
                     if ($booking->status === 'completed') {
@@ -116,14 +115,14 @@
                         }
                     }
                     
-                    // ✅ PERBAIKAN: Cek rating HANYA dari database (jangan pake relationship karena field_id)
+      
                     if ($canRate) {
                         try {
                             // CEK LANGSUNG KE DATABASE dengan booking_id
                             $hasRating = \App\Models\Rating::where('booking_id', $booking->id)->exists();
                             
                             if ($hasRating) {
-                                $ratingDebug[] = "✅ Sudah ada rating di database";
+                                $ratingDebug[] = "✅ Sudah ada rating";
                             } else {
                                 $ratingDebug[] = "✅ Belum ada rating - BISA BERI RATING!";
                             }
@@ -133,7 +132,7 @@
                         }
                     }
                     
-                    // Tentukan icon berdasarkan tipe lapangan
+                    // icon
                     $fieldType = strtolower($booking->lapangan->type ?? '');
                     $fieldIcon = 'fa-running'; // default
                     
@@ -147,13 +146,13 @@
                         $fieldIcon = 'fa-volleyball';
                     }
                     
-                    // Format tanggal
+                    //  tanggal
                     $formattedDate = $booking->formatted_date ?? \Carbon\Carbon::parse($booking->tanggal_booking)->translatedFormat('d F Y');
                     
-                    // Format waktu
+                    // waktu
                     $formattedTime = $booking->formatted_time ?? $booking->jam_mulai . ' - ' . $booking->jam_selesai;
                     
-                    // Hitung sisa waktu jika belum lewat
+                    // sisa wqaktu
                     $timeRemaining = null;
                     $isPast = false;
                     try {
@@ -190,7 +189,7 @@
                             </div>
                         </div>
                         
-                        <!-- Status Badge -->
+                        <!-- Stats -->
                         <span class="px-3 py-1 rounded-full text-xs font-semibold
                             @if($booking->status == 'confirmed') bg-green-500/20 text-green-300 border border-green-500/30
                             @elseif($booking->status == 'pending' || $booking->status == 'pending_verification') bg-yellow-500/20 text-yellow-300 border border-yellow-500/30
@@ -370,7 +369,7 @@
                         @endif
                     </div>
 
-                    <!-- Virtual Account Info (jika sudah bayar) -->
+                    <!-- Virtual Account -->
                     @if($booking->virtual_account && $booking->payment_status == 'pending_verification')
                     <div class="mt-4 p-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/20">
                         <div class="flex items-center justify-between">
@@ -392,7 +391,7 @@
                     </div>
                     @endif
 
-                    <!-- ====================== RATING SECTION FIX ====================== -->
+                    <!-- ====================== RATING ====================== -->
                     @if($canRate && !$hasRating)
                     <div class="mt-4 pt-4 border-t border-yellow-500/20">
                         <a href="{{ route('rating.create', $booking->id) }}" 
@@ -431,7 +430,7 @@
                         @endif
                     </div>
                     @elseif($booking->status === 'confirmed' && $booking->payment_status === 'paid' && !$isPast)
-                    <!-- Info waktu booking belum lewat -->
+                    <!-- Info waktu booking belum telat-->
                     <div class="mt-4 pt-4 border-t border-gray-700/30">
                         <div class="text-center text-gray-400 text-sm">
                             <i class="fas fa-clock mr-1"></i>
@@ -447,12 +446,12 @@
                         </div>
                     </div>
                     @endif
-                    <!-- ====================== END RATING SECTION ====================== -->
+                    <!-- ====================== selesai ====================== -->
                 </div>
                 @endforeach
             </div>
 
-            <!-- Booking Summary -->
+            <!-- Booking bayar/belum -->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
@@ -485,13 +484,13 @@
             <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <div id="modalContent" class="text-gray-300">
-            <!-- Content akan diisi oleh JavaScript -->
+          
         </div>
     </div>
 </div>
 
 <script>
-// View Details Function
+
 async function viewDetails(bookingId) {
     const modal = document.getElementById('bookingModal');
     const content = document.getElementById('modalContent');
@@ -509,15 +508,14 @@ async function viewDetails(bookingId) {
     modal.classList.add('flex');
     
     try {
-        // Fetch booking details via API atau langsung dari data yang ada
-        // Karena API mungkin belum ada, kita pakai cara sederhana
+
         const bookingCard = document.querySelector(`[data-booking-id="${bookingId}"]`);
         
         if (!bookingCard) {
             throw new Error('Booking tidak ditemukan');
         }
         
-        // Ambil data dari card yang ada
+       
         const fieldName = bookingCard.querySelector('h3').textContent.trim();
         const fieldType = bookingCard.querySelector('.text-emerald-300').textContent.trim();
         const date = bookingCard.querySelectorAll('.text-gray-300 span')[0].textContent.trim();
@@ -526,7 +524,7 @@ async function viewDetails(bookingId) {
         const price = bookingCard.querySelector('.text-emerald-300.text-2xl').textContent.trim();
         const paymentStatus = bookingCard.querySelector('.text-sm.font-semibold').textContent.trim();
         
-        // Format the details
+       
         content.innerHTML = `
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
@@ -615,7 +613,7 @@ function closeModal() {
 // Copy to Clipboard
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        // Show notification
+        // notif
         const notification = document.createElement('div');
         notification.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded-xl shadow-lg border border-emerald-400/30 animate-fade-in-up z-50';
         notification.innerHTML = `
@@ -634,7 +632,7 @@ function copyToClipboard(text) {
     });
 }
 
-// Animate cards on scroll
+// Animate scroll
 document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
@@ -659,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function testRating(bookingId) {
     console.log('Testing rating untuk booking:', bookingId);
     
-    // Coba akses route rating
+    // kses rating
     fetch(`/rating/${bookingId}/create`, {
         method: 'GET',
         headers: {
