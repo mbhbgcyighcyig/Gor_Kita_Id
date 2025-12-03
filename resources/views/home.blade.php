@@ -56,7 +56,7 @@
 
         <!-- Enhanced Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Total Bookings -->
+            <!-- Total Booking-->
             <div class="group bg-gradient-to-br from-emerald-600/20 to-cyan-600/20 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-2">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -69,7 +69,7 @@
                 <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-b-3xl"></div>
             </div>
 
-            <!-- Active Bookings -->
+            <!-- Aktif Booking -->
             <div class="group bg-gradient-to-br from-cyan-600/20 to-emerald-600/20 rounded-3xl p-6 shadow-2xl border border-cyan-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-2">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30">
@@ -97,7 +97,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Recent Ratings Section -->
+            <!-- Ratimng-->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-black text-white flex items-center space-x-3">
@@ -112,7 +112,7 @@
                     </a>
                 </div>
                 
-                <!-- STATIC RATINGS - JONI 5/5 -->
+                <!-- STAT RATING - JONI 5/5 -->
                 <div class="space-y-4">
                     @foreach($joniRatings as $rating)
                     <div class="group bg-white/5 rounded-2xl p-4 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-sm">
@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+            <!-- jelajahi-->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-cyan-500/20 backdrop-blur-sm">
                 <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30">
@@ -178,7 +178,7 @@
             </div>
         </div>
 
-        <!-- Available Fields Section -->
+        <!-- ketersediaan -->
         <div class="mt-12">
             <div class="flex items-center justify-between mb-8">
                 <div>
@@ -193,7 +193,7 @@
                 </div>
             </div>
 
-            <!-- Futsal Fields -->
+            <!-- Futsal -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30 shadow-lg">
@@ -253,7 +253,7 @@
                         </div>
                     </div>
                     @empty
-                    <!-- Temporary Dummy Futsal Fields dengan Gambar Lokal -->
+                    <!--  Dummy Futsal -->
                     @php
                         $localDummyFutsalFields = [
                             [
@@ -316,7 +316,7 @@
                 </div>
             </div>
 
-            <!-- Badminton Fields -->
+            <!-- Badminton -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30 shadow-lg">
@@ -378,7 +378,7 @@
                         </div>
                     </div>
                     @empty
-                    <!-- Temporary Dummy Badminton Fields dengan Gambar Lokal -->
+                    <!--  Dummy Badminton  -->
                     @php
                         $localDummyBadmintonFields = [
                             [
@@ -441,7 +441,7 @@
                 </div>
             </div>
 
-            <!-- Mini Soccer Fields -->
+            <!-- Mini Soccer  -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30 shadow-lg">
