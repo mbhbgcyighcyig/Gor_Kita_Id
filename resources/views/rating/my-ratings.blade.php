@@ -51,7 +51,7 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
+            <!-- Belum Rate -->
             <div class="mt-8">
                 {{ $ratings->links() }}
             </div>
