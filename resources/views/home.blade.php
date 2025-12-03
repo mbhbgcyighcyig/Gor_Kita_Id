@@ -152,7 +152,8 @@
                     <span>Jelajahi</span>
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- ✅ PERBAIKAN: tambahkan parameter type -->
+
+                
                     <a href="{{ route('booking.select-field', ['type' => 'badminton']) }}" class="group bg-gradient-to-br from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white p-5 rounded-2xl text-center transition-all duration-300 transform hover:-translate-y-2 border border-emerald-500/30 backdrop-blur-sm">
                         <i class="fas fa-calendar-plus text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
                         <p class="font-bold">New Booking</p>
