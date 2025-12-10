@@ -9,8 +9,6 @@ use Carbon\Carbon;
 class Booking extends Model
 {
     use HasFactory;
-
-    // ✅ SESUAIKAN DENGAN KOLOM YANG ADA DI TABEL
     protected $fillable = [
         'user_id', 
         'lapangan_id',
@@ -90,7 +88,6 @@ class Booking extends Model
         return $this->hasOne(Rating::class, 'booking_id');
     }
 
-    // ==================== SCOPES ====================
     
     public function scopePending($query)
     {
@@ -135,7 +132,6 @@ class Booking extends Model
                     ->where('status', self::STATUS_CONFIRMED);
     }
 
-    // ==================== ACCESSORS ====================
     
     public function getFormattedDateAttribute()
     {
@@ -169,17 +165,14 @@ class Booking extends Model
     
     public function getIsExpiredAttribute()
     {
-        // Cek berdasarkan payment_expiry
         if ($this->payment_expiry && $this->payment_expiry < now()) {
             return true;
         }
         
-        // Cek apakah status sudah expired
         if ($this->status === self::STATUS_EXPIRED) {
             return true;
         }
         
-        // Cek berdasarkan tanggal booking sudah lewat untuk pending payments
         try {
             $bookingDateTime = Carbon::parse($this->tanggal_booking . ' ' . $this->jam_selesai);
             $isBookingPast = $bookingDateTime < now();

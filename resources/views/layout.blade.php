@@ -355,16 +355,13 @@
                     </div>
                 </div>
                 
-                <!-- Hours & Newsletter -->
                 <div>
                     <h3 class="text-xl font-bold mb-6">Jam Operasional</h3>
                     <div class="text-gray-400 mb-8">
                         @php
-                            // Ambil data pengaturan dari database
-                            // Ganti dengan cara lu ambil data
                             $pengaturan = \App\Models\Pengaturan::first();
                             $jamBuka = $pengaturan->jam_buka ?? '08:00';
-                            $jamTutup = $pengaturan->jam_tutup ?? '23:00';
+                            $jamTutup = $pengaturan->jam_tutup ?? '22:00';
                         @endphp
                         
                         <div class="space-y-2">
@@ -380,7 +377,7 @@
                     </div>
                     
             
-            //copyright
+  
             <div class="border-t border-gray-700 mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <p class="text-gray-500 mb-4 md:mb-0">

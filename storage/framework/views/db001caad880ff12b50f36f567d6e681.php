@@ -5,7 +5,6 @@
 <?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-4xl mx-auto px-4">
-        <!-- Header -->
         <div class="text-center mb-12">
             <div class="inline-flex items-center space-x-3 bg-white/5 backdrop-blur-xl border border-emerald-500/20 rounded-2xl px-6 py-3 mb-6">
                 <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
@@ -18,7 +17,6 @@
             <p class="text-xl text-gray-400 max-w-2xl mx-auto">Lengkapi pembayaran untuk mengamankan slot premium Anda</p>
         </div>
 
-        <!-- Timer & Status -->
         <?php if($remainingTime && $remainingTime != 'EXPIRED'): ?>
         <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-3xl p-6 mb-8 border border-yellow-500/30 backdrop-blur-sm">
             <div class="flex items-center justify-between">
@@ -40,10 +38,8 @@
         <?php endif; ?>
 
         <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Left Column: Payment Form -->
             <div class="lg:col-span-2">
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm">
-                    <!-- Booking Summary -->
                     <div class="mb-8">
                         <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -75,12 +71,9 @@
                         </div>
                     </div>
 
-                    <!-- Payment Form -->
-                    <!-- ✅ PERBAIKAN DI SINI: route('booking.payment.process') -->
                     <form action="<?php echo e(route('booking.payment.process', $booking->id)); ?>" method="POST" id="paymentForm">
                         <?php echo csrf_field(); ?>
                         
-                        <!-- Bank Selection -->
                         <div class="mb-8">
                             <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center border border-blue-400/30">
@@ -124,7 +117,6 @@
                             </div>
                         </div>
 
-                        <!-- PIN Input -->
                         <div class="mb-8">
                             <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center border border-red-400/30">
@@ -135,7 +127,6 @@
                             <div class="bg-white/5 rounded-2xl p-8 border border-white/10">
                                 <p class="text-gray-400 mb-6 text-center">Masukkan 6 digit PIN untuk mengkonfirmasi pembayaran</p>
                                 
-                                <!-- PIN Input Boxes -->
                                 <div class="flex justify-center space-x-4 mb-8">
                                     <?php for($i = 1; $i <= 6; $i++): ?>
                                     <input type="password" 
@@ -147,7 +138,6 @@
                                 </div>
                                 <input type="hidden" name="pin" id="pinHidden">
                                 
-                                <!-- Demo Info -->
                                 <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-2xl p-4 mb-6 border border-yellow-500/30">
                                     <div class="flex items-center space-x-3">
                                         <i class="fas fa-info-circle text-yellow-400 text-xl"></i>
@@ -169,7 +159,6 @@
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
                         <div class="flex gap-4">
                             <button type="submit" 
                                     id="submitBtn"
@@ -189,10 +178,8 @@
                 </div>
             </div>
 
-            <!-- Right Column: Instructions -->
             <div>
                 <div class="sticky top-8">
-                    <!-- Instructions -->
                     <div class="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl p-8 border border-blue-500/20 backdrop-blur-sm mb-6">
                         <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center border border-blue-400/30">
@@ -228,7 +215,6 @@
                         </ol>
                     </div>
 
-                    <!-- Total Price -->
                     <div class="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm">
                         <h2 class="text-2xl font-black text-white mb-6">Total Tagihan</h2>
                         <div class="space-y-4 mb-6">
@@ -254,7 +240,6 @@
                             </div>
                         </div>
                         
-                        <!-- Status Badge -->
                         <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
                             <p class="text-gray-400 text-sm mb-1">Status Booking</p>
                             <p class="text-xl font-bold text-yellow-400">MENUNGGU PEMBAYARAN</p>
@@ -273,12 +258,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     let selectedBank = null;
-    
-    // Bank selection
+     
     document.querySelectorAll('input[name="bank"]').forEach(radio => {
         radio.addEventListener('change', function() {
+
             selectedBank = this.value;
-            // Show VA number
             document.querySelectorAll('.va-display').forEach(el => el.style.display = 'none');
             const vaDisplay = this.closest('label').querySelector('.va-display');
             if (vaDisplay) vaDisplay.style.display = 'block';
@@ -286,24 +270,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // PIN handling
     pinBoxes.forEach(box => {
         box.addEventListener('input', function(e) {
             const index = parseInt(this.dataset.index);
             const value = this.value;
             
-            // Only numbers
             if (!/^\d$/.test(value)) {
                 this.value = '';
                 return;
             }
             
-            // Add filled style
             this.classList.add('filled');
             this.style.borderColor = '#10b981';
             this.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
-            
-            // Move to next
+           
             if (value.length === 1 && index < 6) {
                 pinBoxes[index].focus();
             }
@@ -317,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (e.key === 'Backspace') {
                 if (this.value === '' && index > 1) {
-                    // Move to previous
+              
                     pinBoxes[index - 2].focus();
                     pinBoxes[index - 2].value = '';
                     pinBoxes[index - 2].classList.remove('filled');
@@ -335,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Paste handling
+   
         box.addEventListener('paste', function(e) {
             e.preventDefault();
             const pasted = e.clipboardData.getData('text');
@@ -382,12 +362,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Auto focus first PIN box
     setTimeout(() => {
         if (pinBoxes[0]) pinBoxes[0].focus();
     }, 500);
     
-    // Form submission
+  
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
         submitBtn.disabled = true;
         btnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>MEMPROSES...';

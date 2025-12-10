@@ -7,23 +7,22 @@ use App\Models\User;
 use App\Models\Lapangan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
     /**
-     * Halaman dashboard admin
+     * Dashboard admin
      */
     public function dashboard()
     {
-        // Stats calculations
+        // Stats
         $totalBookings = Booking::count();
         $todayBookings = Booking::whereDate('tanggal_booking', today())->count();
         $totalUsers = User::where('role', 'user')->count();
         $totalFields = Lapangan::count();
         
-        // Revenue calculations with null checking
+        // Hitung pendapatan
         $confirmedBookings = Booking::where('status', 'confirmed')
             ->with('lapangan')
             ->get();
@@ -33,6 +32,7 @@ class AdminController extends Controller
             if ($booking->total_price && $booking->total_price > 0) {
                 $totalRevenue += $booking->total_price;
             } else {
+                // Kalkulasi manual kalo total_price kosong
                 try {
                     $start = Carbon::parse($booking->jam_mulai);
                     $end = Carbon::parse($booking->jam_selesai);
@@ -45,17 +45,17 @@ class AdminController extends Controller
                         $totalRevenue += $duration * $defaultPrice;
                     }
                 } catch (\Exception $e) {
+                    // Fallback
                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
-                        $totalRevenue += $booking->lapangan->price_per_hour * 1;
+                        $totalRevenue += $booking->lapangan->price_per_hour;
                     } else {
-                        $defaultPrice = Lapangan::first()->price_per_hour ?? 40000;
-                        $totalRevenue += $defaultPrice * 1;
+                        $totalRevenue += 40000;
                     }
                 }
             }
         }
 
-        // Weekly bookings data for chart
+        // Data chart mingguan
         $weeklyData = [];
         $weeklyLabels = [];
         
@@ -70,13 +70,13 @@ class AdminController extends Controller
             $weeklyData[] = $bookingCount;
         }
 
-        // Recent bookings
+        // Booking terbaru
         $recentBookings = Booking::with(['user', 'lapangan'])
             ->latest()
             ->limit(5)
             ->get();
 
-        // Today's bookings
+        // Booking hari ini
         $todayBookingsList = Booking::with(['user', 'lapangan'])
             ->whereDate('tanggal_booking', today())
             ->orderBy('jam_mulai')
@@ -96,7 +96,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Halaman manajemen pembayaran
+     * Halaman pembayaran
      */
     public function pembayaran()
     {
@@ -108,45 +108,41 @@ class AdminController extends Controller
     }
 
     /**
-     * Konfirmasi pembayaran
+     * Konfirmasi bayar
      */
     public function confirmPayment($id)
     {
         try {
             $booking = Booking::findOrFail($id);
             
-            // ========== VALIDASI SEBELUM KONFIRMASI ==========
-            
-            // 1. Cek status booking sudah cancelled/expired/completed
+            // Validasi
             if (in_array($booking->status, ['cancelled', 'expired', 'completed'])) {
                 return redirect()->route('admin.pembayaran')
-                    ->with('error', 'Booking sudah ' . $booking->status . '! Tidak bisa dikonfirmasi.');
+                    ->with('error', 'Booking ' . $booking->status . '! Ga bisa konfirm.');
             }
             
-            // 2. Cek payment_status harus pending_verification
             if (!in_array($booking->payment_status, ['pending_verification', 'pending'])) {
                 return redirect()->route('admin.pembayaran')
-                    ->with('error', 'Status pembayaran tidak valid untuk konfirmasi! Status: ' . $booking->payment_status);
+                    ->with('error', 'Status bayar ga valid! Status: ' . $booking->payment_status);
             }
             
-            // 3. Cek apakah tanggal booking sudah lewat
+            // Cek waktu booking lewat
             try {
                 $bookingDateTime = Carbon::parse($booking->tanggal_booking . ' ' . $booking->jam_selesai);
                 if ($bookingDateTime < now()) {
-                    // Auto reject jika sudah lewat
                     $booking->update([
                         'payment_status' => 'failed',
                         'status' => 'expired'
                     ]);
                     
                     return redirect()->route('admin.pembayaran')
-                        ->with('warning', 'Booking sudah expired! Status diubah ke expired.');
+                        ->with('warning', 'Booking expired! Status diubah.');
                 }
             } catch (\Exception $e) {
-                Log::error('Error parsing booking datetime: ' . $e->getMessage());
+                Log::error('Parse booking error: ' . $e->getMessage());
             }
             
-            // 4. Cek apakah payment sudah expired (payment_expiry)
+            // Cek payment expired
             if ($booking->payment_expiry && $booking->payment_expiry < now()) {
                 $booking->update([
                     'payment_status' => 'failed',
@@ -154,10 +150,10 @@ class AdminController extends Controller
                 ]);
                 
                 return redirect()->route('admin.pembayaran')
-                    ->with('warning', 'Pembayaran sudah expired! Status diubah ke expired.');
+                    ->with('warning', 'Bayar expired! Status diubah.');
             }
             
-            // 5. Cek konflik jadwal (double booking)
+            // Cek konflik jadwal
             $conflictingBooking = Booking::where('lapangan_id', $booking->lapangan_id)
                 ->where('tanggal_booking', $booking->tanggal_booking)
                 ->where('status', 'confirmed')
@@ -178,16 +174,10 @@ class AdminController extends Controller
             
             if ($conflictingBooking) {
                 return redirect()->route('admin.pembayaran')
-                    ->with('error', 'Lapangan sudah dibooking di waktu tersebut!');
+                    ->with('error', 'Lapangan udah dibooking!');
             }
             
-            // 6. Cek apakah PIN sudah diverifikasi (jika menggunakan PIN)
-            if ($booking->payment_pin && !$booking->pin_verified) {
-                return redirect()->route('admin.pembayaran')
-                    ->with('error', 'PIN pembayaran belum diverifikasi!');
-            }
-            
-            // ========== SEMUA VALIDASI BERHASIL, KONFIRMASI ==========
+            // Konfirmasi
             $booking->update([
                 'payment_status' => 'paid',
                 'status' => 'confirmed',
@@ -195,41 +185,29 @@ class AdminController extends Controller
             ]);
 
             return redirect()->route('admin.pembayaran')
-                ->with('success', '✅ Pembayaran berhasil dikonfirmasi! Booking sekarang aktif.');
+                ->with('success', '✅ Bayar berhasil dikonfirm!');
                 
         } catch (\Exception $e) {
-            Log::error('Confirm Payment Error: ' . $e->getMessage(), [
-                'booking_id' => $id,
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Confirm bayar error: ' . $e->getMessage());
             
             return redirect()->route('admin.pembayaran')
-                ->with('error', '❌ Gagal mengkonfirmasi pembayaran: ' . $e->getMessage());
+                ->with('error', '❌ Gagal konfirm bayar: ' . $e->getMessage());
         }
     }
 
     /**
-     * Tolak pembayaran
+     * Tolak bayar
      */
     public function rejectPayment($id)
     {
         try {
             $booking = Booking::findOrFail($id);
             
-            // Validasi sebelum reject
+            // Validasi
             $validStatuses = ['pending_verification', 'pending'];
             if (!in_array($booking->payment_status, $validStatuses)) {
-                $statusText = $booking->payment_status;
-                if ($booking->payment_status === 'paid') {
-                    $statusText = 'sudah dibayar';
-                } elseif ($booking->payment_status === 'failed') {
-                    $statusText = 'sudah ditolak';
-                } elseif ($booking->payment_status === 'expired') {
-                    $statusText = 'sudah expired';
-                }
-                
                 return redirect()->route('admin.pembayaran')
-                    ->with('error', 'Pembayaran ' . $statusText . '! Tidak bisa ditolak.');
+                    ->with('error', 'Bayar udah ' . $booking->payment_status . '! Ga bisa ditolak.');
             }
             
             $booking->update([
@@ -238,17 +216,17 @@ class AdminController extends Controller
             ]);
 
             return redirect()->route('admin.pembayaran')
-                ->with('success', '❌ Pembayaran berhasil ditolak!');
+                ->with('success', '❌ Bayar berhasil ditolak!');
                 
         } catch (\Exception $e) {
-            Log::error('Reject Payment Error: ' . $e->getMessage());
+            Log::error('Tolak bayar error: ' . $e->getMessage());
             return redirect()->route('admin.pembayaran')
-                ->with('error', '❌ Gagal menolak pembayaran: ' . $e->getMessage());
+                ->with('error', '❌ Gagal tolak bayar.');
         }
     }
 
     /**
-     * AUTO-EXPIRED: Method untuk handle expired bookings (bisa dijalankan via cron job)
+     * Auto-expire bookings
      */
     public function autoExpireBookings()
     {
@@ -256,14 +234,11 @@ class AdminController extends Controller
             $expiredCount = 0;
             $now = now();
             
-            // Cari booking yang payment_expiry sudah lewat
             $expiredBookings = Booking::where(function($query) use ($now) {
-                // Cek berdasarkan payment_expiry
                 $query->where(function($q) use ($now) {
                     $q->whereNotNull('payment_expiry')
                       ->where('payment_expiry', '<', $now);
                 })
-                // Atau cek berdasarkan tanggal booking sudah lewat
                 ->orWhere(function($q) use ($now) {
                     $q->whereDate('tanggal_booking', '<', $now->toDateString());
                 });
@@ -290,7 +265,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Halaman bookings admin
+     * Halaman bookings
      */
     public function bookings()
     {
@@ -302,77 +277,74 @@ class AdminController extends Controller
     }
 
     /**
-     * Complete booking
+     * Selesai booking
      */
     public function completeBooking($id)
     {
         try {
             $booking = Booking::findOrFail($id);
             
-            // Validasi: hanya booking confirmed yang bisa di-complete
             if ($booking->status !== 'confirmed') {
                 return redirect()->route('admin.book')
-                    ->with('error', 'Hanya booking yang sudah confirmed bisa diselesaikan!');
+                    ->with('error', 'Cuma booking confirmed yang bisa selesai!');
             }
             
             $booking->update(['status' => 'completed']);
 
             return redirect()->route('admin.book')
-                ->with('success', '✅ Booking berhasil diselesaikan!');
+                ->with('success', '✅ Booking selesai!');
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.book')
-                ->with('error', '❌ Gagal menyelesaikan booking: ' . $e->getMessage());
+                ->with('error', '❌ Gagal selesai booking.');
         }
     }
 
     /**
-     * Confirm booking (admin)
+     * Konfirm booking (admin)
      */
     public function confirmBookingAdmin($id)
     {
         try {
             $booking = Booking::findOrFail($id);
             
-            // Validasi: hanya booking pending yang bisa dikonfirmasi
             if (!in_array($booking->status, ['pending', 'pending_verification'])) {
                 return redirect()->route('admin.book')
-                    ->with('error', 'Hanya booking pending yang bisa dikonfirmasi!');
+                    ->with('error', 'Cuma booking pending yang bisa dikonfirm!');
             }
             
             $booking->update(['status' => 'confirmed']);
 
             return redirect()->route('admin.book')
-                ->with('success', '✅ Booking berhasil dikonfirmasi!');
+                ->with('success', '✅ Booking dikonfirm!');
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.book')
-                ->with('error', '❌ Gagal mengkonfirmasi booking: ' . $e->getMessage());
+                ->with('error', '❌ Gagal konfirm booking.');
         }
     }
 
     /**
-     * Cancel booking (admin)
+     * Batal booking (admin)
      */
     public function cancelBookingAdmin($id)
     {
         try {
             $booking = Booking::findOrFail($id);
             
-            // Validasi: jangan cancel yang sudah completed/cancelled/expired
             if (in_array($booking->status, ['completed', 'cancelled', 'expired'])) {
                 return redirect()->route('admin.book')
-                    ->with('error', 'Booking sudah ' . $booking->status . '!');
+                    ->with('error', 'Booking udah ' . $booking->status . '!');
             }
             
             $booking->update(['status' => 'cancelled']);
 
             return redirect()->route('admin.book')
-                ->with('success', '❌ Booking berhasil dibatalkan!');
+                ->with('success', '❌ Booking dibatalkan!');
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.book')
-                ->with('error', '❌ Gagal membatalkan booking: ' . $e->getMessage());
+                ->with('error', '❌ Gagal batal booking.');
         }
     }
 
@@ -385,7 +357,7 @@ class AdminController extends Controller
         $confirmedBookings = Booking::where('status', 'confirmed')->count();
         $pendingBookings = Booking::where('status', 'pending')->orWhere('status', 'pending_verification')->count();
         
-        // Hitung total pendapatan
+        // Hitung pendapatan
         $allBookings = Booking::where('status', 'confirmed')
             ->with('lapangan')
             ->get();
@@ -395,6 +367,7 @@ class AdminController extends Controller
             if ($booking->total_price && $booking->total_price > 0) {
                 $totalRevenue += $booking->total_price;
             } else {
+                // Kalkulasi manual
                 try {
                     $start = Carbon::parse($booking->jam_mulai);
                     $end = Carbon::parse($booking->jam_selesai);
@@ -407,11 +380,11 @@ class AdminController extends Controller
                         $totalRevenue += $duration * $defaultPrice;
                     }
                 } catch (\Exception $e) {
+                    // Fallback
                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
-                        $totalRevenue += $booking->lapangan->price_per_hour * 1;
+                        $totalRevenue += $booking->lapangan->price_per_hour;
                     } else {
-                        $defaultPrice = Lapangan::first()->price_per_hour ?? 40000;
-                        $totalRevenue += $defaultPrice * 1;
+                        $totalRevenue += 40000;
                     }
                 }
             }
@@ -419,7 +392,7 @@ class AdminController extends Controller
         
         $avgRevenue = $totalBookings > 0 ? $totalRevenue / $totalBookings : 0;
         
-        // Data chart statistik booking
+        // Stats booking
         $bookingStats = [
             'confirmed' => $confirmedBookings,
             'pending' => $pendingBookings,
@@ -428,7 +401,7 @@ class AdminController extends Controller
             'expired' => Booking::where('status', 'expired')->count(),
         ];
         
-        // Lapangan terpopuler
+        // Lapangan populer
         $topFields = Lapangan::withCount(['bookings' => function($query) {
             $query->where('status', 'confirmed');
         }])->orderBy('bookings_count', 'desc')->limit(5)->get();
@@ -440,7 +413,7 @@ class AdminController extends Controller
             ->limit(5)
             ->get();
         
-        // Data chart pendapatan bulanan
+        // Chart pendapatan bulanan
         $monthlyRevenueData = [];
         $monthlyLabels = [];
         
@@ -460,6 +433,7 @@ class AdminController extends Controller
                 if ($booking->total_price && $booking->total_price > 0) {
                     $monthRevenue += $booking->total_price;
                 } else {
+                    // Kalkulasi manual
                     try {
                         $start = Carbon::parse($booking->jam_mulai);
                         $end = Carbon::parse($booking->jam_selesai);
@@ -472,11 +446,11 @@ class AdminController extends Controller
                             $monthRevenue += $duration * $defaultPrice;
                         }
                     } catch (\Exception $e) {
+                        // Fallback
                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
-                            $monthRevenue += $booking->lapangan->price_per_hour * 1;
+                            $monthRevenue += $booking->lapangan->price_per_hour;
                         } else {
-                            $defaultPrice = Lapangan::first()->price_per_hour ?? 40000;
-                            $monthRevenue += $defaultPrice * 1;
+                            $monthRevenue += 40000;
                         }
                     }
                 }
@@ -501,7 +475,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Halaman pengguna
+     * Halaman users
      */
     public function users()
     {
@@ -513,26 +487,26 @@ class AdminController extends Controller
     }
 
     /**
-     * Delete user
+     * Hapus user
      */
     public function deleteUser(User $user)
     {
         try {
-            // Hapus booking user terlebih dahulu
+            // Hapus booking user
             Booking::where('user_id', $user->id)->delete();
             $user->delete();
 
             return redirect()->route('admin.users')
-                ->with('success', '✅ User berhasil dihapus!');
+                ->with('success', '✅ User dihapus!');
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.users')
-                ->with('error', '❌ Gagal menghapus user: ' . $e->getMessage());
+                ->with('error', '❌ Gagal hapus user.');
         }
     }
 
     /**
-     * Toggle user status
+     * Toggle status user
      */
     public function toggleUserStatus($id)
     {
@@ -542,13 +516,13 @@ class AdminController extends Controller
                 'is_active' => !$user->is_active
             ]);
 
-            $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+            $status = $user->is_active ? 'aktif' : 'nonaktif';
             return redirect()->route('admin.users')
-                ->with('success', "✅ User berhasil $status!");
+                ->with('success', "✅ User {$status}!");
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.users')
-                ->with('error', '❌ Gagal mengubah status user: ' . $e->getMessage());
+                ->with('error', '❌ Gagal ubah status user.');
         }
     }
 
@@ -561,23 +535,23 @@ class AdminController extends Controller
     }
 
     /**
-     * Update settings
+     * Update pengaturan
      */
     public function updateSettings(Request $request)
     {
         try {
-            // Logic untuk update settings
+            // Simpan pengaturan
             return redirect()->route('admin.pengaturan')
-                ->with('success', '✅ Pengaturan berhasil diperbarui!');
+                ->with('success', '✅ Pengaturan diupdate!');
                 
         } catch (\Exception $e) {
             return redirect()->route('admin.pengaturan')
-                ->with('error', '❌ Gagal memperbarui pengaturan: ' . $e->getMessage());
+                ->with('error', '❌ Gagal update pengaturan.');
         }
     }
 
     /**
-     * API Methods for dashboard data
+     * API dashboard data
      */
     public function getDashboardData()
     {
@@ -595,7 +569,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Laporan methods
+     * Halaman laporan lainnya
      */
     public function laporanHarian()
     {
@@ -618,7 +592,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Get payment statistics
+     * Get payment stats
      */
     public function getPaymentStats()
     {

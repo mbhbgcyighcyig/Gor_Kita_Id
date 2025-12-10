@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PengaturanController extends Controller
 {
-    public function pengaturan() // Method ini harus sesuai dengan yang di route
+    public function pengaturan()
     {
         // Ambil atau buat data pengaturan
         $pengaturan = Pengaturan::first();
@@ -27,7 +27,7 @@ class PengaturanController extends Controller
         return view('admin.pengaturan', compact('pengaturan'));
     }
 
-    public function updateSettings(Request $request) // Method ini harus sesuai dengan yang di route
+    public function updateSettings(Request $request)
     {
         $validated = $request->validate([
             'nama_aplikasi' => 'required|string|max:255',

@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-md mx-auto px-4">
-        <!-- Header -->
         <div class="text-center mb-8">
             <div class="inline-flex items-center space-x-2 bg-gray-800/50 rounded-full px-6 py-3 border border-yellow-500/30 mb-6">
                 <i class="fas fa-star text-yellow-400"></i>
@@ -18,7 +17,6 @@
             <p class="text-gray-400">Share your experience for booking #{{ $booking->id }}</p>
         </div>
 
-        <!-- Booking Info -->
         <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 mb-6 border border-emerald-500/20">
             <h3 class="text-lg font-bold text-white mb-4">Booking Details</h3>
             <div class="space-y-3">
@@ -43,12 +41,10 @@
             </div>
         </div>
 
-        <!-- Rating Form -->
         <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-yellow-500/20">
             <form method="POST" action="{{ route('rating.store', $booking->id) }}">
                 @csrf
                 
-                <!-- Star Rating -->
                 <div class="mb-6">
                     <label class="block text-gray-300 mb-4 text-center text-lg font-semibold">
                         How was your experience?
@@ -74,7 +70,6 @@
                     </div>
                 </div>
                 
-                <!-- Comment -->
                 <div class="mb-6">
                     <label for="comment" class="block text-gray-300 mb-2">
                         <i class="fas fa-comment mr-2"></i>Comment (Optional)
@@ -87,7 +82,6 @@
                     @enderror
                 </div>
                 
-                <!-- Buttons -->
                 <div class="flex space-x-3">
                     <a href="{{ route('booking.my-bookings') }}" 
                        class="flex-1 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-3 rounded-xl text-center transition-all duration-300 transform hover:-translate-y-1 border border-gray-600/30">
@@ -117,14 +111,12 @@ document.addEventListener('DOMContentLoaded', function() {
         5: 'Excellent'
     };
     
-    // Set initial state
     ratingInputs.forEach(input => {
         if (input.checked) {
             updateStars(parseInt(input.value));
         }
     });
     
-    // Star click event
     stars.forEach(star => {
         star.addEventListener('click', function() {
             const value = this.getAttribute('for').replace('star', '');
@@ -132,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Star hover event
     stars.forEach(star => {
         star.addEventListener('mouseover', function() {
             const value = this.getAttribute('for').replace('star', '');
@@ -140,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Reset on mouse out
     document.getElementById('starRating').addEventListener('mouseleave', function() {
         const checkedInput = document.querySelector('input[name="rating"]:checked');
         if (checkedInput) {

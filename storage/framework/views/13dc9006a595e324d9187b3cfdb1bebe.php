@@ -60,14 +60,11 @@
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <?php echo $__env->make('admin.partials.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
         
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-800">Laporan & Analitik</h1>
@@ -79,16 +76,14 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <?php
                     $totalBookings = \App\Models\Booking::count();
                     $confirmedBookings = \App\Models\Booking::where('status', 'confirmed')->count();
                     $pendingBookings = \App\Models\Booking::where('status', 'pending')->count();
                     
-                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
                     $allBookings = \App\Models\Booking::where('status', 'confirmed')
-                        ->with('lapangan') // GANTI 'field' MENJADI 'lapangan'
+                        ->with('lapangan')
                         ->get();
                     
                     $totalRevenue = 0;
@@ -101,16 +96,13 @@
                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                 $duration = $start->diffInHours($end);
                                 
-                                // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $totalRevenue += $duration * $booking->lapangan->price_per_hour;
                                 } else {
-                                    // ✅ PERBAIKAN: Lapangan bukan Field
-                                    $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
+                                   $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                     $totalRevenue += $duration * $defaultPrice;
                                 }
                             } catch (\Exception $e) {
-                                // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $totalRevenue += $booking->lapangan->price_per_hour * 1;
                                 } else {
@@ -124,7 +116,6 @@
                     $avgRevenue = $totalBookings > 0 ? $totalRevenue / $totalBookings : 0;
                 ?>
                 
-                <!-- Total Bookings -->
                 <div class="stat-card bg-gradient-to-r from-blue-500 to-cyan-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -138,7 +129,6 @@
                     </div>
                 </div>
                 
-                <!-- Confirmed Bookings -->
                 <div class="stat-card bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -152,7 +142,6 @@
                     </div>
                 </div>
                 
-                <!-- Pending Bookings -->
                 <div class="stat-card bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -166,7 +155,6 @@
                     </div>
                 </div>
                 
-                <!-- Total Revenue -->
                 <div class="stat-card bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -181,29 +169,23 @@
                 </div>
             </div>
 
-            <!-- Charts Section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <!-- Monthly Revenue Chart -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Pendapatan Bulanan</h3>
                     <canvas id="revenueChart" height="250"></canvas>
                 </div>
 
-                <!-- Booking Stats Chart -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Statistik Booking</h3>
                     <canvas id="bookingChart" height="250"></canvas>
                 </div>
             </div>
 
-            <!-- Detailed Reports -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <!-- Top Fields -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Lapangan Terpopuler</h3>
                     <div class="space-y-4">
                         <?php
-                            // ✅ PERBAIKAN: Gunakan Lapangan bukan Field
                             $topFields = \App\Models\Lapangan::withCount(['bookings' => function($query) {
                                 $query->where('status', 'confirmed');
                             }])->orderBy('bookings_count', 'desc')->limit(5)->get();
@@ -229,7 +211,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Transactions -->
                 <div class="chart-container lg:col-span-2">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Transaksi Terbaru</h3>
                     <div class="overflow-x-auto">
@@ -246,7 +227,6 @@
                             </thead>
                             <tbody>
                                 <?php
-                                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                     $recentBookings = \App\Models\Booking::with(['user', 'lapangan'])
                                         ->where('status', 'confirmed')
                                         ->orderBy('created_at', 'desc')
@@ -263,7 +243,6 @@
                                         <div class="font-bold text-gray-800"><?php echo e($booking->user->name); ?></div>
                                     </td>
                                     <td class="py-3 px-4">
-                                        <!-- ✅ PERBAIKAN: 'field' -> 'lapangan' -->
                                         <div class="text-gray-800"><?php echo e($booking->lapangan->name ?? 'Court #' . $booking->lapangan_id); ?></div>
                                     </td>
                                     <td class="py-3 px-4">
@@ -273,7 +252,6 @@
                                     <td class="py-3 px-4">
                                         <div class="font-bold text-green-600">
                                             <?php
-                                                // Hitung harga untuk display
                                                 if ($booking->total_price && $booking->total_price > 0) {
                                                     $displayPrice = $booking->total_price;
                                                 } else {
@@ -282,16 +260,13 @@
                                                         $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                         $duration = $start->diffInHours($end);
                                                         
-                                                        // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                             $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                         } else {
-                                                            // ✅ PERBAIKAN: Lapangan bukan Field
                                                             $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                                             $displayPrice = $duration * $defaultPrice;
                                                         }
                                                     } catch (\Exception $e) {
-                                                        // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                             $displayPrice = $booking->lapangan->price_per_hour * 1;
                                                         } else {
@@ -319,7 +294,6 @@
                 </div>
             </div>
 
-            <!-- Export Section -->
             <div class="chart-container">
                 <h3 class="text-xl font-bold text-gray-800 mb-6">Ekspor Laporan</h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -345,7 +319,6 @@
     </div>
 
     <?php
-        // Data untuk chart pendapatan bulanan (12 bulan terakhir)
         $monthlyRevenueData = [];
         $monthlyLabels = [];
         
@@ -354,7 +327,6 @@
             $monthName = $date->translatedFormat('M');
             $year = $date->format('Y');
             
-            // ✅ PERBAIKAN: 'field' -> 'lapangan'
             $monthBookings = \App\Models\Booking::where('status', 'confirmed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $date->month)
@@ -371,16 +343,13 @@
                         $end = \Carbon\Carbon::parse($booking->jam_selesai);
                         $duration = $start->diffInHours($end);
                         
-                        // ✅ PERBAIKAN: 'field' -> 'lapangan'
                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                             $monthRevenue += $duration * $booking->lapangan->price_per_hour;
                         } else {
-                            // ✅ PERBAIKAN: Lapangan bukan Field
                             $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                             $monthRevenue += $duration * $defaultPrice;
                         }
                     } catch (\Exception $e) {
-                        // ✅ PERBAIKAN: 'field' -> 'lapangan'
                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                             $monthRevenue += $booking->lapangan->price_per_hour * 1;
                         } else {
@@ -395,7 +364,6 @@
             $monthlyRevenueData[] = $monthRevenue;
         }
 
-        // Data untuk chart statistik booking
         $bookingStats = [
             'confirmed' => \App\Models\Booking::where('status', 'confirmed')->count(),
             'pending' => \App\Models\Booking::where('status', 'pending')->count(),
@@ -405,7 +373,6 @@
     ?>
 
     <script>
-    // Revenue Chart
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
     const revenueChart = new Chart(revenueCtx, {
         type: 'line',
@@ -456,7 +423,6 @@
         }
     });
 
-    // Booking Stats Chart
     const bookingCtx = document.getElementById('bookingChart').getContext('2d');
     const bookingChart = new Chart(bookingCtx, {
         type: 'doughnut',

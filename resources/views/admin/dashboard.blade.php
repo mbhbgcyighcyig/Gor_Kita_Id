@@ -60,14 +60,11 @@
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             @include('admin.partials.sidebar')
         </div>
         
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-800">Dashboard Admin</h1>
@@ -79,16 +76,14 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 @php
                     $totalBookings = \App\Models\Booking::count();
                     $todayBookings = \App\Models\Booking::whereDate('tanggal_booking', today())->count();
                     
-                    // ✅ PERBAIKI: Gunakan Lapangan bukan Field
                     $weeklyBookings = \App\Models\Booking::whereBetween('tanggal_booking', [now()->startOfWeek(), now()->endOfWeek()])
                         ->where('status', 'confirmed')
-                        ->with('lapangan') // ✅ GANTI: 'field' -> 'lapangan'
+                        ->with('lapangan')
                         ->get();
                     
                     $weeklyRevenue = 0;
@@ -101,17 +96,14 @@
                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                 $duration = $start->diffInHours($end);
                                 
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $calculatedPrice = $duration * $booking->lapangan->price_per_hour;
                                     $weeklyRevenue += $calculatedPrice;
                                 } else {
-                                    // ✅ PERBAIKI: Gunakan Lapangan model
                                     $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                     $weeklyRevenue += $duration * $defaultPrice;
                                 }
                             } catch (\Exception $e) {
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $weeklyRevenue += $booking->lapangan->price_per_hour * 1;
                                 } else {
@@ -124,9 +116,8 @@
                     
                     $confirmedBookings = \App\Models\Booking::where('status', 'confirmed')->count();
                     
-                    // Hitung total pendapatan semua waktu
                     $allBookings = \App\Models\Booking::where('status', 'confirmed')
-                        ->with('lapangan') // ✅ GANTI: 'field' -> 'lapangan'
+                        ->with('lapangan')
                         ->get();
                     $totalRevenue = 0;
                     foreach ($allBookings as $booking) {
@@ -138,7 +129,6 @@
                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                 $duration = $start->diffInHours($end);
                                 
-                                // ✅ PERBAIKI: Gunakan lapangan bukan field
                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                     $totalRevenue += $duration * $booking->lapangan->price_per_hour;
                                 } else {
@@ -157,7 +147,6 @@
                     }
                 @endphp
                 
-                <!-- Total Booking -->
                 <div class="stat-card bg-gradient-to-r from-blue-500 to-cyan-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -171,7 +160,6 @@
                     </div>
                 </div>
                 
-                <!-- Booking Hari Ini -->
                 <div class="stat-card bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -185,7 +173,6 @@
                     </div>
                 </div>
                 
-                <!-- Pendapatan Minggu Ini -->
                 <div class="stat-card bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -199,7 +186,6 @@
                     </div>
                 </div>
                 
-                <!-- Total Pendapatan -->
                 <div class="stat-card bg-gradient-to-r from-orange-500 to-red-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -214,20 +200,16 @@
                 </div>
             </div>
 
-            <!-- Charts & Data Section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <!-- Statistik Booking Minggu Ini -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Statistik Booking Minggu Ini</h3>
                     <canvas id="weeklyChart" height="250"></canvas>
                 </div>
 
-                <!-- Booking Hari Ini -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Booking Hari Ini</h3>
                     <div class="space-y-4">
                         @php
-                            // ✅ PERBAIKI: Gunakan lapangan bukan field
                             $todayBookingsList = \App\Models\Booking::with(['user', 'lapangan'])
                                 ->whereDate('tanggal_booking', today())
                                 ->orderBy('jam_mulai')
@@ -256,7 +238,6 @@
                                                         $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                         $duration = $start->diffInHours($end);
                                                         
-                                                        // ✅ PERBAIKI: Gunakan lapangan bukan field
                                                         if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                             $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                         } else {
@@ -296,14 +277,11 @@
                 </div>
             </div>
 
-            <!-- Bottom Section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Booking Terbaru -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Booking Terbaru</h3>
                     <div class="space-y-4">
                         @php
-                            // ✅ PERBAIKI: Gunakan lapangan bukan field
                             $recentBookings = \App\Models\Booking::with(['user', 'lapangan'])
                                 ->latest()
                                 ->limit(5)
@@ -335,7 +313,6 @@
                                                 $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                 $duration = $start->diffInHours($end);
                                                 
-                                                // ✅ PERBAIKI: Gunakan lapangan bukan field
                                                 if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                     $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                 } else {
@@ -367,7 +344,6 @@
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
                 <div class="chart-container">
                     <h3 class="text-xl font-bold text-gray-800 mb-6">Quick Overview</h3>
                     <div class="grid grid-cols-2 gap-4">
@@ -378,7 +354,7 @@
                         </div>
                         <div class="bg-green-50 p-4 rounded-lg text-center">
                             <i class="fas fa-map-marker-alt text-green-600 text-2xl mb-2"></i>
-                            <p class="font-bold text-gray-800">{{ \App\Models\Lapangan::count() }}</p> <!-- ✅ PERBAIKI: Lapangan bukan Field -->
+                            <p class="font-bold text-gray-800">{{ \App\Models\Lapangan::count() }}</p>
                             <p class="text-sm text-gray-600">Total Lapangan</p>
                         </div>
                         <div class="bg-purple-50 p-4 rounded-lg text-center">
@@ -410,12 +386,10 @@
                     $weeklyData[] = $bookingCount;
                 }
                 
-                // Hitung max value untuk chart
                 $maxValue = count($weeklyData) > 0 ? max($weeklyData) : 1;
             @endphp
 
             <script>
-            // Chart.js untuk statistik booking mingguan dengan data real
             const ctx = document.getElementById('weeklyChart').getContext('2d');
 
             const weeklyChart = new Chart(ctx, {

@@ -81,7 +81,6 @@ class AuthController extends Controller
         if (Auth::check() && Auth::user()->role === 'admin') {
             return redirect('/admin/dashboard');
         }
-        // Jika sudah login sebagai user, tampilkan form login admin tanpa logout
         if (Auth::check()) {
             return view('auth.admin-login')->with('warning', 'Anda sudah login sebagai user. Silakan logout terlebih dahulu untuk login sebagai admin.');
         }
@@ -142,7 +141,6 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         
-        // Safety check - pastikan user masih login
         if (!$user) {
             return redirect('/login');
         }

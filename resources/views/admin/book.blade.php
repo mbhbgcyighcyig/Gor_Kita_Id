@@ -52,14 +52,11 @@
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             @include('admin.partials.sidebar')
         </div>
         
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-800">Manajemen Booking</h1>
@@ -71,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- Alert Messages -->
             @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                 <i class="fas fa-check-circle mr-2"></i>
@@ -86,7 +82,6 @@
             </div>
             @endif
 
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 @php
                     $totalBookings = \App\Models\Booking::count();
@@ -95,7 +90,6 @@
                     $confirmedBookings = \App\Models\Booking::where('status', 'confirmed')->count();
                 @endphp
                 
-                <!-- Total Booking -->
                 <div class="stat-card bg-gradient-to-r from-blue-500 to-cyan-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -109,7 +103,6 @@
                     </div>
                 </div>
                 
-                <!-- Booking Hari Ini -->
                 <div class="stat-card bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -123,7 +116,6 @@
                     </div>
                 </div>
                 
-                <!-- Menunggu Konfirmasi -->
                 <div class="stat-card bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -137,7 +129,6 @@
                     </div>
                 </div>
                 
-                <!-- Terkonfirmasi -->
                 <div class="stat-card bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -152,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Booking List -->
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Daftar Booking</h2>
@@ -183,7 +173,6 @@
                         </thead>
                         <tbody>
                             @php
-                                // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                 $bookings = \App\Models\Booking::with(['user', 'lapangan'])
                                     ->orderBy('created_at', 'desc')
                                     ->get();
@@ -200,7 +189,6 @@
                                     <div class="text-sm text-gray-500">{{ $booking->user->email }}</div>
                                 </td>
                                 <td class="py-4 px-6">
-                                    <!-- ✅ PERBAIKAN: 'field' -> 'lapangan' -->
                                     @if($booking->lapangan)
                                         <p class="font-bold text-gray-800">{{ $booking->lapangan->name }}</p>
                                         <p class="text-gray-500 text-sm capitalize">{{ $booking->lapangan->type ?? 'Tidak diketahui' }}</p>
@@ -222,7 +210,6 @@
                                 <td class="py-4 px-6">
                                     <div class="font-bold text-green-600">
                                         @php
-                                            // Hitung harga untuk display
                                             if ($booking->total_price && $booking->total_price > 0) {
                                                 $displayPrice = $booking->total_price;
                                             } else {
@@ -231,16 +218,13 @@
                                                     $end = \Carbon\Carbon::parse($booking->jam_selesai);
                                                     $duration = $start->diffInHours($end);
                                                     
-                                                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                         $displayPrice = $duration * $booking->lapangan->price_per_hour;
                                                     } else {
-                                                        // ✅ PERBAIKAN: Lapangan bukan Field
                                                         $defaultPrice = \App\Models\Lapangan::first()->price_per_hour ?? 40000;
                                                         $displayPrice = $duration * $defaultPrice;
                                                     }
                                                 } catch (\Exception $e) {
-                                                    // ✅ PERBAIKAN: 'field' -> 'lapangan'
                                                     if ($booking->lapangan && $booking->lapangan->price_per_hour) {
                                                         $displayPrice = $booking->lapangan->price_per_hour * 1;
                                                     } else {
@@ -318,7 +302,6 @@
     </div>
 
     <script>
-    // Filter functionality
     document.getElementById('statusFilter').addEventListener('change', function() {
         filterTable();
     });

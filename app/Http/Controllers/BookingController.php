@@ -60,7 +60,7 @@ class BookingController extends Controller
     }
     
     /**
-     * Tampilkan pilihan waktu untuk lapangan tertentu - LOGIKA EXPIRED DIPERBAIKI
+     * Tampilkan pilihan waktu untuk lapangan tertentu 
      */
     public function selectTime($fieldId, Request $request = null)
     {
@@ -100,7 +100,7 @@ class BookingController extends Controller
             return back()->with('error', 'Tidak bisa booking tanggal yang sudah lewat');
         }
         
-        // Generate semua slot waktu dari 08:00-09:00 sampai 21:00-22:00
+        //  slot waktu dari 08:00-09:00 sampai 21:00-22:00
         $allSlots = [];
         for ($hour = 8; $hour <= 21; $hour++) {
             $startHour = str_pad($hour, 2, '0', STR_PAD_LEFT);
@@ -137,7 +137,6 @@ class BookingController extends Controller
             'expired' => []
         ];
         
-        // PERBAIKAN UTAMA: LOGIKA EXPIRED YANG BENAR
         foreach ($allSlots as $slot) {
             // Parse waktu slot
             $startTime = explode('-', $slot)[0];
@@ -163,21 +162,18 @@ class BookingController extends Controller
                 'hour_comparison' => 'Slot: ' . $slotHour . ':00 vs Now: ' . $currentHour . ':' . $currentMinute
             ]);
             
-            // LOGIKA EXPIRED: Cek apakah slot sudah lewat (HARI INI dan waktu sudah lewat)
             if ($isToday) {
                 // Hitung apakah slot sudah lewat
                 $isPast = false;
                 
-                // Cara 1: Gunakan Carbon comparison (lebih akurat)
                 $isPast = $slotDateTime->lt($nowWIB);
-                
-                // Cara 2: Manual comparison (fallback)
+            
                 if (!$isPast) {
-                    // Jika jam slot < jam sekarang → pasti lewat
+                    // slot jam lewat
                     if ($slotHour < $currentHour) {
                         $isPast = true;
                     }
-                    // Jika jam slot sama dengan jam sekarang, cek menit
+
                     elseif ($slotHour == $currentHour && $slotMinute <= $currentMinute) {
                         $isPast = true;
                     }
@@ -191,7 +187,7 @@ class BookingController extends Controller
                         'current_time' => $currentHour . ':' . str_pad($currentMinute, 2, '0', STR_PAD_LEFT)
                     ]);
                     $availableSlots['expired'][] = $slot;
-                    continue; // Skip ke slot berikutnya
+                    continue; 
                 }
             }
             
@@ -303,9 +299,7 @@ class BookingController extends Controller
         ));
     }
     
-    /**
-     * Tampilkan detail konfirmasi (alternatif method)
-     */
+    
     public function showConfirm($fieldId, $date, $time)
     {
         $request = new Request([

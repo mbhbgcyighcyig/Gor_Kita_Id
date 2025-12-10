@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Timeline Header -->
         <div class="text-center mb-12">
             <div class="flex justify-center items-center space-x-4 mb-6">
                 <div class="flex items-center space-x-2">
@@ -31,10 +30,8 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Field Overview Card -->
             <div class="lg:w-1/3">
                 <div class="sticky top-8 space-y-6">
-                    <!-- Field Card -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center space-x-4">
@@ -71,7 +68,6 @@
                         </div>
                     </div>
 
-                    <!-- Date Selector -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-cyan-500/20 backdrop-blur-sm">
                         <div class="flex items-center space-x-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center">
@@ -99,7 +95,6 @@
                         </form>
                     </div>
 
-                    <!-- Availability Meter -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                         <h3 class="text-lg font-black text-white mb-4">Status Ketersediaan</h3>
                         <div class="space-y-4">
@@ -114,7 +109,6 @@
                                 $isToday = \Carbon\Carbon::parse($selectedDate)->isToday();
                             @endphp
                             
-                            <!-- Progress Bar -->
                             <div class="space-y-2">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-400">Ketersediaan Lapangan</span>
@@ -126,7 +120,6 @@
                                 </div>
                             </div>
 
-                            <!-- Stats -->
                             <div class="grid grid-cols-3 gap-4 text-center">
                                 <div>
                                     <div class="text-2xl font-black text-emerald-300">{{ $availableCount }}</div>
@@ -142,7 +135,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Info -->
                             <div class="pt-4 border-t border-gray-700/50">
                                 <div class="text-xs text-gray-500 space-y-1">
                                     <div class="flex items-center">
@@ -166,12 +158,9 @@
                 </div>
             </div>
 
-            <!-- Time Selection Area -->
             <div class="lg:w-2/3">
                 @if(count($availableSlots['available']) > 0)
-                    <!-- Time Slots Grid -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm">
-                        <!-- Time Slots Header -->
                         <div class="flex items-center justify-between mb-8">
                             <div>
                                 <h2 class="text-2xl font-black text-white">Pilihan Jam Tersedia</h2>
@@ -183,11 +172,9 @@
                             </div>
                         </div>
 
-                        <!-- Time Slots Grid - LOGIKA SIMPLE -->
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             @foreach($availableSlots['all'] as $timeSlot)
                                 @php
-                                    // Tentukan status slot dari controller
                                     $isAvailable = in_array($timeSlot, $availableSlots['available']);
                                     $isBooked = in_array($timeSlot, $availableSlots['booked']);
                                     $isExpired = in_array($timeSlot, $availableSlots['expired']);
@@ -206,7 +193,6 @@
                                         title="@if($isBooked) Sudah dipesan @elseif($isExpired) Waktu sudah lewat @endif">
                                 @endif
                                 
-                                    <!-- Time -->
                                     <div class="text-center mb-2">
                                         <div class="text-lg font-black @if($isAvailable) text-white group-hover:text-emerald-300 transition-colors @elseif($isBooked) text-red-200 @else text-gray-400 @endif">
                                             {{ $timeSlot }}
@@ -221,7 +207,6 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Status Indicator -->
                                     <div class="absolute top-2 right-2">
                                         @if($isAvailable)
                                             <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
@@ -232,7 +217,6 @@
                                         @endif
                                     </div>
 
-                                    <!-- Price -->
                                     <div class="text-center">
                                         <div class="text-sm font-semibold 
                                             @if($isAvailable) text-emerald-300 
@@ -242,7 +226,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Hover Effect untuk slot tersedia -->
                                     @if($isAvailable)
                                         <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                             <div class="text-emerald-300 text-sm font-semibold flex items-center space-x-1">
@@ -252,14 +235,12 @@
                                         </div>
                                     @endif
 
-                                    <!-- Badge untuk slot yang sudah dipesan -->
                                     @if($isBooked)
                                         <div class="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-2 py-1 rounded-full">
                                             <i class="fas fa-lock mr-1"></i>Booked
                                         </div>
                                     @endif
 
-                                    <!-- Badge untuk slot kadaluarsa -->
                                     @if($isExpired)
                                         <div class="absolute -top-2 -right-2 bg-gradient-to-r from-gray-600 to-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full">
                                             <i class="fas fa-clock mr-1"></i>Lewat
@@ -274,7 +255,6 @@
                             @endforeach
                         </div>
 
-                        <!-- Legend -->
                         <div class="mt-6 pt-6 border-t border-gray-700/50">
                             <div class="flex flex-wrap items-center justify-center gap-4 text-sm">
                                 <div class="flex items-center space-x-2">
@@ -296,7 +276,6 @@
                             </div>
                         </div>
 
-                        <!-- Quick Actions -->
                         <div class="mt-8 pt-6 border-t border-gray-700/50">
                             <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
                                 <div class="text-gray-400 text-sm">
@@ -311,7 +290,6 @@
                         </div>
                     </div>
                 @else
-                    <!-- No Slots Available -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-12 border border-emerald-500/20 backdrop-blur-sm text-center">
                         <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-700/40 to-gray-800/40 rounded-3xl flex items-center justify-center border border-gray-600/50">
                             <i class="fas fa-ban text-gray-400 text-3xl"></i>
@@ -340,7 +318,6 @@
                     </div>
                 @endif
 
-                <!-- Tips Section -->
                 <div class="mt-6 bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 rounded-3xl p-6 border border-cyan-500/20 backdrop-blur-sm">
                     <div class="flex items-center space-x-3 mb-4">
                         <i class="fas fa-lightbulb text-cyan-400 text-xl"></i>
@@ -371,7 +348,6 @@
 </div>
 
 <style>
-/* scroll tetap */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -385,18 +361,11 @@
     border-radius: 3px;
 }
 
-/* Transisi */
-.transition-all {
-    transition: all .3s cubic-bezier(.4,0,.2,1);
-}
-
-/* Animasi slot */
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Animasi jam real-time */
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
@@ -405,13 +374,11 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Update waktu WIB real-time
     function updateWIBTime() {
         const now = new Date();
         const options = { timeZone: 'Asia/Jakarta', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
         const timeString = now.toLocaleTimeString('id-ID', options);
         
-        // Update semua elemen dengan ID currentTimeWIB
         const elements = ['currentTimeWIB', 'currentTimeWIB2'];
         elements.forEach(id => {
             const element = document.getElementById(id);
@@ -425,18 +392,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Update setiap detik
     updateWIBTime();
     setInterval(updateWIBTime, 1000);
     
-    // Animasi untuk slot waktu
     const timeSlots = document.querySelectorAll('.bg-gradient-to-br');
     
     timeSlots.forEach((slot, index) => {
         slot.style.animation = `fadeInUp 0.5s ease ${index * 0.05}s both`;
     });
 
-    // Auto-refresh jika tanggal hari ini
     const selectedDate = "{{ $selectedDate }}";
     const today = new Date().toISOString().split('T')[0];
     
@@ -444,10 +408,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Tanggal hari ini, auto-refresh setiap 60 detik untuk update slot expired');
         setTimeout(() => {
             location.reload();
-        }, 60000); // Refresh setiap 60 detik
+        }, 60000);
     }
     
-    // Alert jika mencoba klik slot yang tidak tersedia
     document.querySelectorAll('.cursor-not-allowed').forEach(slot => {
         slot.addEventListener('click', function(e) {
             e.preventDefault();

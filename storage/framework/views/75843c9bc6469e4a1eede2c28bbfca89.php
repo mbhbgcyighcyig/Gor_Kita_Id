@@ -5,9 +5,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-12">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Hero About dengan Animasi -->
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-12 text-center mb-16 border border-emerald-500/30 backdrop-blur-lg">
-            <!-- Background Effects -->
             <div class="absolute top-0 left-0 w-72 h-72 bg-emerald-500/5 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl"></div>
             
@@ -29,7 +27,6 @@
             </div>
         </div>
 
-        <!-- Stats dengan Hover Effects -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20">
             <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-8 text-center border border-emerald-500/20 backdrop-blur-lg transition-all duration-500 hover:scale-105 hover:border-emerald-500/40">
                 <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -76,9 +73,7 @@
             </div>
         </div>
 
-        <!-- Story Section dengan Layout Modern -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-            <!-- About Card -->
             <div class="relative group">
                 <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
                 <div class="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-xl">
@@ -101,7 +96,6 @@
                 </div>
             </div>
 
-            <!-- Vision & Mission Card -->
             <div class="relative group">
                 <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-3xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
                 <div class="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-3xl p-8 border border-cyan-500/20 backdrop-blur-xl">
@@ -113,7 +107,6 @@
                     </div>
                     
                     <div class="space-y-6">
-                        <!-- Vision -->
                         <div class="bg-white/5 rounded-2xl p-4 border border-emerald-500/10">
                             <h3 class="text-xl font-bold text-emerald-300 mb-3 flex items-center space-x-3">
                                 <i class="fas fa-eye text-emerald-400"></i>
@@ -124,7 +117,6 @@
                             </p>
                         </div>
 
-                        <!-- Mission -->
                         <div class="bg-white/5 rounded-2xl p-4 border border-cyan-500/10">
                             <h3 class="text-xl font-bold text-cyan-300 mb-3 flex items-center space-x-3">
                                 <i class="fas fa-flag text-cyan-400"></i>
@@ -156,7 +148,6 @@
             </div>
         </div>
 
-        <!-- Facilities dengan Carousel Effect -->
         <div class="mb-20">
             <div class="text-center mb-12">
                 <h2 class="text-4xl lg:text-5xl font-black text-white mb-4">
@@ -168,7 +159,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Futsal -->
                 <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-8 border border-emerald-500/20 backdrop-blur-lg transition-all duration-500 hover:scale-105">
                     <div class="absolute top-4 right-4">
                         <span class="bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">Popular</span>
@@ -194,7 +184,7 @@
                         </div>
                     </div>
                 </div>
-<!-- Badminton -->
+
 <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 p-8 border border-cyan-500/20 backdrop-blur-lg transition-all duration-500 hover:scale-105">
     <div class="text-center">
         <div class="w-24 h-24 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-cyan-400/30 group-hover:scale-110 transition-transform duration-300 shadow-2xl">
@@ -218,7 +208,6 @@
     </div>
 </div>
 
-<!-- Mini Soccer -->
 <div class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-8 border border-emerald-500/20 backdrop-blur-lg transition-all duration-500 hover:scale-105">
     <div class="text-center">
         <div class="w-24 h-24 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-400/30 group-hover:scale-110 transition-transform duration-300 shadow-2xl">
@@ -243,7 +232,7 @@
 </div>
             </div>
         </div>
-       <!-- CTA Section -->
+       
 <div class="text-center mb-20">
     <div class="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-3xl p-12 border border-emerald-500/30 backdrop-blur-lg">
         <h2 class="text-4xl lg:text-5xl font-black text-white mb-6">
@@ -269,9 +258,7 @@
 </div>
 
 <script>
-    // Enhanced animations with staggered effects
     document.addEventListener('DOMContentLoaded', function() {
-        // Scroll animations with stagger
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -288,7 +275,6 @@
             });
         }, observerOptions);
 
-        // Observe all groups with stagger
         document.querySelectorAll('.group').forEach((el, index) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
@@ -296,7 +282,6 @@
             observer.observe(el);
         });
 
-        // Add floating animation to stats cards
         const statsCards = document.querySelectorAll('.grid > .group');
         statsCards.forEach((card, index) => {
             card.style.animationDelay = `${index * 0.2}s`;

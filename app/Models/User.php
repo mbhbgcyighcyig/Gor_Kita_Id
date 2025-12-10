@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // PASTIKAN INI ADA
+        'role', 
     ];
 
     protected $hidden = [
@@ -27,7 +27,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // TAMBAHKAN RELASI INI
     public function bookings()
     {
         return $this->hasMany(Booking::class);

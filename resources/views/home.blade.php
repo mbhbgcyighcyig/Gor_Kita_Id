@@ -3,7 +3,7 @@
 @section('title', 'Dashboard - GotKita.ID')
 
 @php
-    // DEFAULT VALUES JIKA VARIABLE TIDAK ADA
+    
     $stats = $stats ?? [
         'total_bookings' => 0,
         'active_bookings' => 0,
@@ -30,7 +30,7 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black">
     <!-- Welcome Section -->
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- 🖼️ LOGO UTAMA - Taruh logo kamu di sini -->
+        
         <div class="flex justify-center mb-6">
             <img src="{{ asset('img/logo/logo-gorkita.png') }}" 
                  alt="GorKita.ID Logo" 
@@ -56,7 +56,7 @@
 
         <!-- Enhanced Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Total Bookings -->
+            <!-- Total Booking-->
             <div class="group bg-gradient-to-br from-emerald-600/20 to-cyan-600/20 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-2">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -69,7 +69,7 @@
                 <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-b-3xl"></div>
             </div>
 
-            <!-- Active Bookings -->
+            <!-- Aktif Booking -->
             <div class="group bg-gradient-to-br from-cyan-600/20 to-emerald-600/20 rounded-3xl p-6 shadow-2xl border border-cyan-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-2">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30">
@@ -97,7 +97,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Recent Ratings Section -->
+            <!-- Ratimng-->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-black text-white flex items-center space-x-3">
@@ -112,13 +112,13 @@
                     </a>
                 </div>
                 
-                <!-- STATIC RATINGS - JONI 5/5 -->
+                <!-- STAT RATING - JONI 5/5 -->
                 <div class="space-y-4">
                     @foreach($joniRatings as $rating)
                     <div class="group bg-white/5 rounded-2xl p-4 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 backdrop-blur-sm">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
-                                <!-- 🖼️ AVATAR USER -->
+                                <!-- AVATAR USER -->
                                 <img src="{{ asset('img/users/default-avatar.png') }}" 
                                      alt="Joni"
                                      class="w-12 h-12 rounded-2xl object-cover border border-emerald-400/30"
@@ -143,7 +143,7 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+            <!-- jelajahi-->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-cyan-500/20 backdrop-blur-sm">
                 <h2 class="text-2xl font-black text-white mb-6 flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30">
@@ -152,7 +152,8 @@
                     <span>Jelajahi</span>
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- ✅ PERBAIKAN: tambahkan parameter type -->
+
+                
                     <a href="{{ route('booking.select-field', ['type' => 'badminton']) }}" class="group bg-gradient-to-br from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white p-5 rounded-2xl text-center transition-all duration-300 transform hover:-translate-y-2 border border-emerald-500/30 backdrop-blur-sm">
                         <i class="fas fa-calendar-plus text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
                         <p class="font-bold">New Booking</p>
@@ -177,7 +178,7 @@
             </div>
         </div>
 
-        <!-- Available Fields Section -->
+        <!-- ketersediaan -->
         <div class="mt-12">
             <div class="flex items-center justify-between mb-8">
                 <div>
@@ -192,7 +193,7 @@
                 </div>
             </div>
 
-            <!-- Futsal Fields -->
+            <!-- Futsal -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30 shadow-lg">
@@ -208,9 +209,9 @@
                     @forelse($futsalFields as $index => $field)
                     <div class="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-3">
                         <div class="relative mb-5 overflow-hidden rounded-2xl">
-                            <!-- 🖼️ GAMBAR FUTSAL - Taruh gambar futsal kamu di sini -->
+                          
                             @php
-                                // Ganti dengan gambar futsal milikmu
+                               
                                 $localFutsalImages = [
                                     asset('futsal/sal.jpg'),
                                     asset('futsal/2.jpg'),
@@ -244,7 +245,7 @@
                                 <span class="text-2xl font-black text-emerald-300">Rp {{ number_format($field->price_per_hour ?? 150000, 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                          
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-emerald-500/30 text-sm">
                                 Book sekarang
@@ -252,24 +253,24 @@
                         </div>
                     </div>
                     @empty
-                    <!-- Temporary Dummy Futsal Fields dengan Gambar Lokal -->
+                    <!--  Dummy Futsal -->
                     @php
                         $localDummyFutsalFields = [
                             [
                                 'name' => 'Futsal Arena Pro',
-                                'image' => asset('img/fields/futsal/field-1.jpg'), // 🖼️ Ganti dengan gambar futsal 1
+                                'image' => asset('img/fields/futsal/field-1.jpg'), 
                                 'price' => 150000,
                                 'size' => 'International'
                             ],
                             [
                                 'name' => 'Champion Futsal Court', 
-                                'image' => asset('img/fields/futsal/field-2.jpg'), // 🖼️ Ganti dengan gambar futsal 2
+                                'image' => asset('img/fields/futsal/field-2.jpg'),
                                 'price' => 120000,
                                 'size' => 'Standard'
                             ],
                             [
                                 'name' => 'Premium Futsal Hall',
-                                'image' => asset('img/fields/futsal/field-3.jpg'), // 🖼️ Ganti dengan gambar futsal 3
+                                'image' => asset('img/fields/futsal/field-3.jpg'), 
                                 'price' => 180000,
                                 'size' => 'Olympic'
                             ]
@@ -303,7 +304,7 @@
                                 <span class="text-2xl font-black text-emerald-300">Rp {{ number_format($dummyField['price'], 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                            
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-emerald-500/30 text-sm">
                                 Booking Sekarang
@@ -315,7 +316,7 @@
                 </div>
             </div>
 
-            <!-- Badminton Fields -->
+            <!-- Badminton -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center border border-cyan-400/30 shadow-lg">
@@ -331,7 +332,7 @@
                     @forelse($badmintonFields as $index => $field)
                     <div class="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-cyan-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-3">
                         <div class="relative mb-5 overflow-hidden rounded-2xl">
-                            <!-- 🖼️ GAMBAR BADMINTON - Taruh gambar badminton kamu di sini -->
+         
                             @php
                                 // Ganti dengan gambar badminton milikmu
                                 $localBadmintonImages = [
@@ -369,7 +370,7 @@
                                 <span class="text-2xl font-black text-cyan-300">Rp {{ number_format($field->price_per_hour ?? 100000, 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                            
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-cyan-500/30 text-sm">
                                 Booking Sekarang
@@ -377,24 +378,24 @@
                         </div>
                     </div>
                     @empty
-                    <!-- Temporary Dummy Badminton Fields dengan Gambar Lokal -->
+                    <!--  Dummy Badminton  -->
                     @php
                         $localDummyBadmintonFields = [
                             [
                                 'name' => 'Olympic Badminton Hall',
-                                'image' => asset('img/fields/badminton/court-1.jpg'), // 🖼️ Ganti dengan gambar badminton 1
+                                'image' => asset('img/fields/badminton/court-1.jpg'), 
                                 'price' => 100000,
                                 'type' => 'Indoor'
                             ],
                             [
                                 'name' => 'Pro Badminton Court',
-                                'image' => asset('img/fields/badminton/court-2.jpg'), // 🖼️ Ganti dengan gambar badminton 2
+                                'image' => asset('img/fields/badminton/court-2.jpg'),
                                 'price' => 120000,
                                 'type' => 'Tournament'
                             ],
                             [
                                 'name' => 'Champion Badminton Arena',
-                                'image' => asset('img/fields/badminton/court-3.jpg'), // 🖼️ Ganti dengan gambar badminton 3
+                                'image' => asset('img/fields/badminton/court-3.jpg'),
                                 'price' => 140000,
                                 'type' => 'Professional'
                             ]
@@ -428,7 +429,7 @@
                                 <span class="text-2xl font-black text-cyan-300">Rp {{ number_format($dummyField['price'], 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                            
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-cyan-500/30 text-sm">
                                 Booking Sekarang
@@ -440,7 +441,7 @@
                 </div>
             </div>
 
-            <!-- Mini Soccer Fields -->
+            <!-- Mini Soccer  -->
             <div class="mb-12">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30 shadow-lg">
@@ -456,7 +457,7 @@
                     @forelse($miniSoccerFields as $index => $field)
                     <div class="group bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 shadow-2xl border border-emerald-500/20 backdrop-blur-sm transition-all duration-500 transform hover:-translate-y-3">
                         <div class="relative mb-5 overflow-hidden rounded-2xl">
-                            <!-- 🖼️ GAMBAR MINI SOCCER - Taruh gambar mini soccer kamu di sini -->
+                            
                             @php
                                 // Ganti dengan gambar mini soccer milikmu
                                 $localSoccerImages = [
@@ -492,7 +493,7 @@
                                 <span class="text-2xl font-black text-emerald-300">Rp {{ number_format($field->price_per_hour ?? 200000, 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/hour</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                      
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-emerald-500/30 text-sm">
                                 Booking Sekarang
@@ -505,19 +506,19 @@
                         $localDummySoccerFields = [
                             [
                                 'name' => 'Soccer Field Pro',
-                                'image' => asset('soccer/zz.jpg'), // 🖼️ Ganti dengan gambar mini soccer 1
+                                'image' => asset('soccer/zz.jpg'), 
                                 'price' => 200000,
                                 'capacity' => '7v7'
                             ],
                             [
                                 'name' => 'Champion Soccer Arena',
-                                'image' => asset('img/fields/mini-soccer/soccer-2.jpg'), // 🖼️ Ganti dengan gambar mini soccer 2
+                                'image' => asset('img/fields/mini-soccer/soccer-2.jpg'),
                                 'price' => 350000,
                                 'capacity' => '7v7'
                             ],
                             [
                                 'name' => 'Elite Soccer Field',
-                                'image' => asset('img/fields/mini-soccer/soccer-3.jpg'), // 🖼️ Ganti dengan gambar mini soccer 3
+                                'image' => asset('img/fields/mini-soccer/soccer-3.jpg'), 
                                 'price' => 180000,
                                 'capacity' => '5v5'
                             ]
@@ -551,7 +552,7 @@
                                 <span class="text-2xl font-black text-emerald-300">Rp {{ number_format($dummyField['price'], 0, ',', '.') }}</span>
                                 <span class="text-gray-400 text-sm">/jam</span>
                             </div>
-                            <!-- ✅ PERBAIKAN: link ke booking.index -->
+                           
                             <a href="{{ route('booking.index') }}" 
                                class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white px-4 py-2 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 border border-emerald-500/30 text-sm">
                                 Booking sekarang
@@ -564,7 +565,7 @@
             </div>
         </div>
 
-        <!-- 🖼️ FOOTER DENGAN LOGO -->
+       
         <div class="mt-16 pt-8 border-t border-emerald-500/20">
             <div class="flex flex-col items-center justify-center text-center">
                 <img src="{{ asset('img/logo/logo-gorkita.png') }}" 

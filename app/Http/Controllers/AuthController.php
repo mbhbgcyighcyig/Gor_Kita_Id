@@ -154,16 +154,16 @@ class AuthController extends Controller
             return redirect('/home');
         }
         
-        // ✅ FIX: Pakai view 'auth.register' bukan 'auth.registrasi'
+       
         return view('auth.register');
     }
     
     // PROSES REGISTRASI PENGGUNA BARU
     public function registrasi(Request $request)
     {
-        // ✅ FIX: Sesuaikan validasi dengan form register.blade.php
+       
         $validasi = $request->validate([
-            'name' => 'required|string|max:255', // field 'name' bukan 'nama'
+            'name' => 'required|string|max:255', 
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required'
@@ -181,7 +181,7 @@ class AuthController extends Controller
         
         // Buat user baru
         $pengguna = User::create([
-            'name' => $validasi['name'], // ✅ FIX: Pakai 'name'
+            'name' => $validasi['name'],
             'email' => $validasi['email'],
             'password' => Hash::make($validasi['password']),
             'role' => 'user',
@@ -189,7 +189,7 @@ class AuthController extends Controller
             'updated_at' => now()
         ]);
         
-        // Auto login setelah registrasi (manual session)
+        // Auto login setelah registrasi 
         session([
             'user_id' => $pengguna->id,
             'user_name' => $pengguna->name,
@@ -335,7 +335,6 @@ class AuthController extends Controller
     // HALAMAN UBAH ROLE (HANYA ADMIN)
     public function ubahRole(Request $request, $id)
     {
-        // Cek apakah user adalah admin via session
         if (!session()->has('is_admin') || !session('is_admin')) {
             return redirect()->back()->with('error', 'Akses ditolak!');
         }
@@ -361,7 +360,7 @@ class AuthController extends Controller
         $views = [
             'user-login' => view()->exists('auth.user-login'),
             'admin-login' => view()->exists('auth.admin-login'),
-            'register' => view()->exists('auth.register'), // ✅ FIX: 'register' bukan 'registrasi'
+            'register' => view()->exists('auth.register'), 
             'lupa-password' => view()->exists('auth.lupa-password'),
             'profil' => view()->exists('auth.profil'),
         ];
@@ -386,7 +385,6 @@ class AuthController extends Controller
         return session()->has('user_id');
     }
     
-    // Helper untuk get current user
     public static function currentUser()
     {
         if (session()->has('user_id')) {

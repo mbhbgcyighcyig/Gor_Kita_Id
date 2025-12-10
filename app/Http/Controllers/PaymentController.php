@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\DB;
 class PaymentController extends Controller
 {
     /**
-     * TAMPILKAN FORM PEMBAYARAN
+     * Tampil form bayar
      */
     public function showPaymentForm($bookingId)
     {
         // Cek login
         if (!session()->has('user_id')) {
-            return redirect('/login')->with('error', 'Silakan login dulu!');
+            return redirect('/login')->with('error', 'Login dulu!');
         }
         
         // Cari booking
@@ -25,13 +25,13 @@ class PaymentController extends Controller
         
         // Cek punya user
         if ($booking->user_id != session('user_id')) {
-            return redirect('/home')->with('error', 'Bukan booking kamu!');
+            return redirect('/home')->with('error', 'Bukan booking lu!');
         }
         
-        // Cek status booking
+        // Cek status
         if ($booking->status != 'pending' || $booking->payment_status != 'pending') {
             return redirect()->route('booking.show', $booking->id)
-                ->with('error', 'Booking sudah diproses atau dibatalkan.');
+                ->with('error', 'Booking udah diproses.');
         }
         
         // Cek kadaluarsa
@@ -40,10 +40,10 @@ class PaymentController extends Controller
                 'status' => 'cancelled',
                 'payment_status' => 'expired'
             ]);
-            return redirect('/home')->with('error', 'Waktu pembayaran telah habis!');
+            return redirect('/home')->with('error', 'Waktu bayar habis!');
         }
         
-        // Generate VA numbers
+        // Generate VA
         $vaNumbers = $this->generateVANumbers($booking->id);
         
         return view('booking.payment', [
@@ -54,7 +54,7 @@ class PaymentController extends Controller
     }
     
     /**
-     * PROSES PEMBAYARAN DENGAN PIN
+     * Proses bayar pake PIN
      */
     public function processPayment(Request $request, $bookingId)
     {
@@ -77,12 +77,12 @@ class PaymentController extends Controller
             
             // Cek punya user
             if ($booking->user_id != session('user_id')) {
-                return back()->with('error', 'Akses ditolak!');
+                return back()->with('error', 'Bukan punya lu!');
             }
             
             // Cek status
             if ($booking->status != 'pending' || $booking->payment_status != 'pending') {
-                return back()->with('error', 'Booking sudah diproses!');
+                return back()->with('error', 'Booking udah diproses!');
             }
             
             // Cek kadaluarsa
@@ -91,10 +91,10 @@ class PaymentController extends Controller
                     'status' => 'cancelled',
                     'payment_status' => 'expired'
                 ]);
-                return redirect('/home')->with('error', 'Waktu pembayaran habis!');
+                return redirect('/home')->with('error', 'Waktu bayar habis!');
             }
             
-            // VALIDASI PIN (DEMO: 123456)
+            // Validasi PIN (demo: 123456)
             if ($request->pin !== '123456') {
                 // Hitung attempt
                 $attempts = session("pin_attempts_{$bookingId}", 0) + 1;
@@ -107,19 +107,19 @@ class PaymentController extends Controller
                         'cancelled_at' => now()
                     ]);
                     session()->forget("pin_attempts_{$bookingId}");
-                    return redirect('/home')->with('error', 'PIN salah 3x. Booking dibatalkan!');
+                    return redirect('/home')->with('error', 'PIN salah 3x. Booking batal!');
                 }
                 
-                return back()->with('error', "PIN salah! Percobaan {$attempts}/3. PIN demo: 123456");
+                return back()->with('error', "PIN salah! {$attempts}/3. PIN demo: 123456");
             }
             
-            // RESET ATTEMPTS JIKA BERHASIL
+            // Reset attempt
             session()->forget("pin_attempts_{$bookingId}");
             
-            // GENERATE VIRTUAL ACCOUNT
+            // Generate VA
             $vaNumber = $this->generateVA($booking->id, $request->bank_name);
             
-            // UPDATE BOOKING SETELAH BAYAR
+            // Update booking
             $booking->update([
                 'payment_status' => 'pending_verification',
                 'status' => 'pending_verification',
@@ -129,15 +129,15 @@ class PaymentController extends Controller
                 'pin_verified' => true,
                 'paid_at' => now(),
                 'payment_method' => 'virtual_account',
-                'payment_expiry' => now()->addMinutes(15) // Reset expiry untuk verifikasi admin
+                'payment_expiry' => now()->addMinutes(15)
             ]);
             
-            // LOG TRANSAKSI
+            // Log transaksi
             TransactionLog::create([
                 'booking_id' => $booking->id,
                 'user_id' => session('user_id'),
                 'action' => 'payment_submitted',
-                'description' => "Pembayaran via {$request->bank_name} - VA: {$vaNumber}",
+                'description' => "Bayar via {$request->bank_name} - VA: {$vaNumber}",
                 'amount' => $booking->total_price,
                 'status' => 'pending',
                 'metadata' => [
@@ -150,9 +150,9 @@ class PaymentController extends Controller
             
             DB::commit();
             
-            // REDIRECT KE STATUS PEMBAYARAN
+            // Redirect ke status
             return redirect()->route('payment.status', $booking->id)
-                ->with('success', 'Pembayaran berhasil! Menunggu verifikasi admin.')
+                ->with('success', 'Bayar sukses! Tunggu verifikasi admin.')
                 ->with('va_info', [
                     'bank' => $request->bank_name,
                     'va_number' => $vaNumber,
@@ -161,12 +161,12 @@ class PaymentController extends Controller
                 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+            return back()->with('error', 'Gagal bayar: ' . $e->getMessage());
         }
     }
     
     /**
-     * STATUS PEMBAYARAN
+     * Status pembayaran
      */
     public function showStatus($bookingId)
     {
@@ -177,7 +177,7 @@ class PaymentController extends Controller
         $booking = Booking::with(['lapangan', 'verifier'])->findOrFail($bookingId);
         
         if ($booking->user_id != session('user_id')) {
-            return redirect('/home')->with('error', 'Akses ditolak!');
+            return redirect('/home')->with('error', 'Bukan punya lu!');
         }
         
         $vaInfo = session('va_info');
@@ -189,7 +189,7 @@ class PaymentController extends Controller
     }
     
     /**
-     * BATALKAN PEMBAYARAN
+     * Batalkan bayar
      */
     public function cancelPayment($bookingId)
     {
@@ -199,11 +199,11 @@ class PaymentController extends Controller
             $booking = Booking::findOrFail($bookingId);
             
             if ($booking->user_id != session('user_id')) {
-                return back()->with('error', 'Akses ditolak!');
+                return back()->with('error', 'Bukan punya lu!');
             }
             
             if ($booking->payment_status != 'pending_verification') {
-                return back()->with('error', 'Hanya bisa batalkan pembayaran yang pending!');
+                return back()->with('error', 'Cuma bisa batalkan yang pending!');
             }
             
             $booking->update([
@@ -216,23 +216,23 @@ class PaymentController extends Controller
                 'booking_id' => $booking->id,
                 'user_id' => session('user_id'),
                 'action' => 'payment_cancelled',
-                'description' => 'Pembayaran dibatalkan oleh user',
+                'description' => 'Pembayaran dibatalkan user',
                 'amount' => $booking->total_price,
                 'status' => 'cancelled'
             ]);
             
             DB::commit();
             
-            return redirect('/home')->with('info', 'Pembayaran dibatalkan.');
+            return redirect('/home')->with('info', 'Bayar dibatalkan.');
             
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal membatalkan!');
+            return back()->with('error', 'Gagal batal!');
         }
     }
     
     /**
-     * ADMIN: VERIFIKASI PEMBAYARAN
+     * ADMIN: Verifikasi bayar
      */
     public function adminVerify(Request $request, $bookingId)
     {
@@ -259,25 +259,21 @@ class PaymentController extends Controller
                 'action' => 'payment_verified',
                 'description' => 'Pembayaran diverifikasi admin',
                 'amount' => $booking->total_price,
-                'status' => 'success',
-                'metadata' => [
-                    'verified_by' => session('user_name'),
-                    'notes' => $request->notes
-                ]
+                'status' => 'success'
             ]);
             
             DB::commit();
             
-            return back()->with('success', 'Pembayaran berhasil diverifikasi!');
+            return back()->with('success', 'Pembayaran terverifikasi!');
             
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal memverifikasi!');
+            return back()->with('error', 'Gagal verifikasi!');
         }
     }
     
     /**
-     * ADMIN: TOLAK PEMBAYARAN
+     * ADMIN: Tolak bayar
      */
     public function adminReject(Request $request, $bookingId)
     {
@@ -300,30 +296,30 @@ class PaymentController extends Controller
                 'rejected_at' => now(),
                 'rejected_by' => session('user_id'),
                 'rejection_reason' => $request->reason,
-                'payment_expiry' => now()->addMinutes(15) // Beri waktu untuk bayar ulang
+                'payment_expiry' => now()->addMinutes(15)
             ]);
             
             TransactionLog::create([
                 'booking_id' => $booking->id,
                 'user_id' => session('user_id'),
                 'action' => 'payment_rejected',
-                'description' => "Pembayaran ditolak: {$request->reason}",
+                'description' => "Bayar ditolak: {$request->reason}",
                 'amount' => $booking->total_price,
                 'status' => 'rejected'
             ]);
             
             DB::commit();
             
-            return back()->with('success', 'Pembayaran ditolak!');
+            return back()->with('success', 'Bayar ditolak!');
             
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal menolak pembayaran!');
+            return back()->with('error', 'Gagal tolak!');
         }
     }
     
     /**
-     * ADMIN: DASHBOARD PEMBAYARAN
+     * ADMIN: Dashboard bayar
      */
     public function adminDashboard(Request $request)
     {
@@ -362,7 +358,7 @@ class PaymentController extends Controller
     }
     
     /**
-     * HELPER: GENERATE VA NUMBERS
+     * Helper: Generate VA numbers
      */
     private function generateVANumbers($bookingId)
     {
@@ -376,7 +372,7 @@ class PaymentController extends Controller
     }
     
     /**
-     * HELPER: GENERATE SINGLE VA
+     * Helper: Generate single VA
      */
     private function generateVA($bookingId, $bank)
     {
@@ -393,7 +389,7 @@ class PaymentController extends Controller
     }
     
     /**
-     * HELPER: CALCULATE REMAINING TIME
+     *Hitung sisa waktu
      */
     private function calculateRemainingTime($expiry)
     {

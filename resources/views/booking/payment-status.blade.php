@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-4xl mx-auto px-4">
-        <!-- Status Header -->
         <div class="text-center mb-12">
             @if($booking->payment_status == 'pending_verification')
             <div class="inline-flex items-center space-x-3 bg-yellow-500/10 backdrop-blur-xl border border-yellow-500/20 rounded-2xl px-6 py-3 mb-6">
@@ -33,7 +32,6 @@
             <p class="text-xl text-gray-400 max-w-2xl mx-auto">Lacak status pembayaran booking Anda</p>
         </div>
 
-        <!-- VA Info (if just paid) -->
         @if($vaInfo)
         <div class="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-3xl p-8 mb-8 border border-emerald-500/30 backdrop-blur-sm">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -63,7 +61,6 @@
         @endif
 
         <div class="grid lg:grid-cols-2 gap-8">
-            <!-- Left Column: Status Timeline -->
             <div>
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm h-full">
                     <h2 class="text-2xl font-black text-white mb-8 flex items-center space-x-3">
@@ -73,9 +70,8 @@
                         <span>Timeline Status</span>
                     </h2>
                     
-                    <!-- Timeline -->
+      
                     <div class="space-y-8">
-                        <!-- Step 1: Booking Created -->
                         <div class="flex items-start space-x-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30 flex-shrink-0">
                                 <i class="fas fa-calendar-plus text-white"></i>
@@ -90,7 +86,6 @@
                             </div>
                         </div>
                         
-                        <!-- Step 2: Payment Submitted -->
                         @if($booking->paid_at)
                         <div class="flex items-start space-x-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center border border-blue-400/30 flex-shrink-0">
@@ -110,7 +105,6 @@
                         </div>
                         @endif
                         
-                        <!-- Step 3: Verification -->
                         <div class="flex items-start space-x-4">
                             <div class="w-12 h-12 bg-gradient-to-br {{ $booking->payment_status == 'pending_verification' ? 'from-yellow-500 to-orange-500' : 'from-emerald-500 to-cyan-500' }} rounded-2xl flex items-center justify-center border {{ $booking->payment_status == 'pending_verification' ? 'border-yellow-400/30' : 'border-emerald-400/30' }} flex-shrink-0">
                                 <i class="fas {{ $booking->payment_status == 'pending_verification' ? 'fa-hourglass-half' : 'fa-check-circle' }} text-white"></i>
@@ -141,7 +135,6 @@
                             @endif
                         </div>
                         
-                        <!-- Step 4: Rejected (if any) -->
                         @if($booking->payment_status == 'rejected')
                         <div class="flex items-start space-x-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center border border-red-400/30 flex-shrink-0">
@@ -165,7 +158,6 @@
                 </div>
             </div>
 
-            <!-- Right Column: Booking Details & Actions -->
             <div>
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm h-full">
                     <h2 class="text-2xl font-black text-white mb-8 flex items-center space-x-3">
@@ -205,7 +197,6 @@
                         </div>
                     </div>
                     
-                    <!-- Status Badges -->
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="bg-white/5 rounded-2xl p-4 border border-white/10 text-center">
                             <p class="text-gray-400 text-sm mb-1">Status Booking</p>
@@ -275,7 +266,7 @@
 <script>
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        // Show notification
+    // notif
         const toast = document.createElement('div');
         toast.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl border border-emerald-400/30 z-50 animate-fade-in-up';
         toast.innerHTML = '<i class="fas fa-check-circle mr-2"></i>VA Number disalin!';

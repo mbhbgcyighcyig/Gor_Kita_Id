@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-4xl mx-auto px-4">
-        <!-- Header -->
         <div class="text-center mb-12">
             <div class="inline-flex items-center space-x-3 bg-white/5 backdrop-blur-xl border border-emerald-500/20 rounded-2xl px-6 py-3 mb-6">
                 <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
@@ -18,19 +17,15 @@
             <p class="text-xl text-gray-400 max-w-2xl mx-auto">Detail lengkap reservasi lapangan olahraga Anda</p>
         </div>
 
-        <!-- Main Content -->
         <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Left Column: Booking Details -->
             <div class="lg:col-span-2">
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border border-emerald-500/20 backdrop-blur-sm mb-8">
-                    <!-- Header dengan ID & Status -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
                         <div>
                             <h2 class="text-2xl font-black text-white mb-2">Booking #{{ $booking->id }}</h2>
                             <p class="text-gray-400">Dibuat pada {{ \Carbon\Carbon::parse($booking->created_at)->translatedFormat('d F Y, H:i') }}</p>
                         </div>
                         
-                        <!-- Status Badge -->
                         <div class="mt-4 md:mt-0">
                             <span class="px-4 py-2 rounded-full text-sm font-bold
                                 @if($booking->status == 'confirmed') bg-green-500/20 text-green-300 border border-green-500/30
@@ -43,7 +38,6 @@
                         </div>
                     </div>
 
-                    <!-- Lapangan Info -->
                     <div class="mb-8">
                         <h3 class="text-xl font-black text-white mb-6 flex items-center space-x-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -86,7 +80,6 @@
                         </div>
                     </div>
 
-                    <!-- Waktu & Tanggal -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                             <h4 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
@@ -112,7 +105,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment Details -->
                     <div class="mb-8">
                         <h3 class="text-xl font-black text-white mb-6 flex items-center space-x-3">
                             <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center border border-purple-400/30">
@@ -123,7 +115,6 @@
                         
                         <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <!-- Status Pembayaran -->
                                 <div>
                                     <p class="text-gray-400 mb-2">Status Pembayaran</p>
                                     <div class="flex items-center space-x-3">
@@ -146,11 +137,9 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Total Harga -->
                                 <div>
                                     <p class="text-gray-400 mb-2">Total Pembayaran</p>
                                     @php
-                                        // Hitung harga
                                         $totalPrice = $booking->total_price;
                                         if (!$totalPrice || $totalPrice == 0) {
                                             $fieldPrice = $booking->lapangan ? $booking->lapangan->price_per_hour : 0;
@@ -164,7 +153,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Detail Pembayaran -->
                             @if($booking->payment_method || $booking->bank_name || $booking->virtual_account)
                             <div class="mt-6 pt-6 border-t border-gray-700">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -220,7 +208,6 @@
                         </div>
                     </div>
 
-                    <!-- Notes -->
                     @if($booking->notes)
                     <div class="mb-8">
                         <h3 class="text-xl font-black text-white mb-6 flex items-center space-x-3">
@@ -236,7 +223,6 @@
                     @endif
                 </div>
 
-                <!-- Rating Section -->
                 @if($booking->status === 'completed')
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-8 border 
                     @if($booking->rating) border-green-500/20 @else border-yellow-500/20 @endif backdrop-blur-sm">
@@ -289,10 +275,8 @@
                 @endif
             </div>
 
-            <!-- Right Column: Actions & Info -->
             <div>
                 <div class="sticky top-8">
-                    <!-- Action Buttons -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm mb-6">
                         <h3 class="text-xl font-black text-white mb-6">Aksi</h3>
                         
@@ -344,7 +328,6 @@
                         </div>
                     </div>
                     
-                    <!-- QR Code & Info -->
                     <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-blue-500/20 backdrop-blur-sm">
                         <h3 class="text-xl font-black text-white mb-6">Informasi</h3>
                         
@@ -367,7 +350,6 @@
                             </div>
                         </div>
                         
-                        <!-- QR Code -->
                         <div class="mt-6 pt-6 border-t border-gray-700">
                             <p class="text-gray-400 text-sm mb-4 text-center">QR Code Booking</p>
                             <div class="flex justify-center">
@@ -392,7 +374,6 @@
 <script>
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        // Show notification
         const notification = document.createElement('div');
         notification.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded-2xl shadow-lg border border-emerald-400/30 animate-fade-in-up z-50';
         notification.innerHTML = `
@@ -433,7 +414,6 @@ function copyToClipboard(text) {
     }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }

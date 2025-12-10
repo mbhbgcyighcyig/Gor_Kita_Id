@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Header -->
         <div class="text-center mb-12">
             <div class="inline-flex items-center space-x-2 bg-gray-800/50 rounded-full px-6 py-3 border border-emerald-500/30 mb-6">
                 <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
@@ -18,7 +17,6 @@
             <p class="text-xl text-gray-400">Kelola dan lacak reservasi lapangan olahraga Anda</p>
         </div>
 
-        <!-- Stats -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-12">
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 text-center border border-emerald-500/20 backdrop-blur-sm">
                 <div class="text-3xl font-black text-emerald-300 mb-2">{{ $bookings->count() }}</div>
@@ -43,7 +41,6 @@
         </div>
 
         @if($bookings->isEmpty())
-            <!-- Empty State -->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-12 text-center border border-emerald-500/20 backdrop-blur-sm max-w-2xl mx-auto">
                 <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-700/40 to-gray-800/40 rounded-3xl flex items-center justify-center border border-gray-600/50">
                     <i class="fas fa-calendar-times text-gray-400 text-4xl"></i>
@@ -57,19 +54,14 @@
                 </a>
             </div>
         @else
-       
-            <!-- Bookings Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
                 @foreach($bookings as $booking)
                 @php
-                    // HITUNG HARGA DENGAN BENAR
                     $totalPrice = $booking->total_price;
                     
-                    // Jika total_price kosong atau 0, hitung dari lapangan
                     if (!$totalPrice || $totalPrice == 0) {
                         $fieldPrice = $booking->lapangan ? $booking->lapangan->price_per_hour : 0;
                         
-                        // Hitung duration dari jam
                         try {
                             $start = \Carbon\Carbon::parse($booking->jam_mulai);
                             $end = \Carbon\Carbon::parse($booking->jam_selesai);
@@ -81,61 +73,31 @@
                         $totalPrice = $fieldPrice * $duration;
                     }
                     
-                    // ====================== LOGIC RATING FIX ======================
                     $canRate = false;
                     $hasRating = false;
-                    $ratingDebug = [];
-                    
-                    // Syarat untuk bisa rating:
-                    // 1. Status 'completed' (sudah selesai), ATAU
-                    // 2. Status 'confirmed' DAN waktu booking sudah lewat DAN payment_status 'paid'
                     
                     if ($booking->status === 'completed') {
                         $canRate = true;
-                        $ratingDebug[] = "✅ Status completed";
                     } 
                     elseif ($booking->status === 'confirmed' && $booking->payment_status === 'paid') {
-                        // Cek apakah waktu booking sudah lewat
                         try {
                             $bookingDateTime = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $booking->jam_selesai);
                             if ($bookingDateTime->isPast()) {
                                 $canRate = true;
-                                $ratingDebug[] = "✅ Terkonfirmasi + Lunas + Waktu sudah lewat";
-                            } else {
-                                $ratingDebug[] = "❌ Waktu booking belum lewat (selesai: " . $bookingDateTime->format('d M Y H:i') . ")";
                             }
                         } catch (\Exception $e) {
-                            $ratingDebug[] = "❌ Error parsing waktu: " . $e->getMessage();
-                        }
-                    } else {
-                        if ($booking->status !== 'confirmed') {
-                            $ratingDebug[] = "❌ Status bukan confirmed (status: {$booking->status})";
-                        }
-                        if ($booking->payment_status !== 'paid') {
-                            $ratingDebug[] = "❌ Pembayaran belum lunas (payment: {$booking->payment_status})";
                         }
                     }
                     
-                    // ✅ PERBAIKAN: Cek rating HANYA dari database (jangan pake relationship karena field_id)
                     if ($canRate) {
                         try {
-                            // CEK LANGSUNG KE DATABASE dengan booking_id
                             $hasRating = \App\Models\Rating::where('booking_id', $booking->id)->exists();
-                            
-                            if ($hasRating) {
-                                $ratingDebug[] = "✅ Sudah ada rating di database";
-                            } else {
-                                $ratingDebug[] = "✅ Belum ada rating - BISA BERI RATING!";
-                            }
                         } catch (\Exception $e) {
-                            \Log::error("Error cek rating booking {$booking->id}: " . $e->getMessage());
-                            $ratingDebug[] = "❌ Error cek rating: " . $e->getMessage();
                         }
                     }
                     
-                    // Tentukan icon berdasarkan tipe lapangan
                     $fieldType = strtolower($booking->lapangan->type ?? '');
-                    $fieldIcon = 'fa-running'; // default
+                    $fieldIcon = 'fa-running';
                     
                     if (str_contains($fieldType, 'futsal') || str_contains($fieldType, 'soccer')) {
                         $fieldIcon = 'fa-futbol';
@@ -147,13 +109,10 @@
                         $fieldIcon = 'fa-volleyball';
                     }
                     
-                    // Format tanggal
                     $formattedDate = $booking->formatted_date ?? \Carbon\Carbon::parse($booking->tanggal_booking)->translatedFormat('d F Y');
                     
-                    // Format waktu
                     $formattedTime = $booking->formatted_time ?? $booking->jam_mulai . ' - ' . $booking->jam_selesai;
                     
-                    // Hitung sisa waktu jika belum lewat
                     $timeRemaining = null;
                     $isPast = false;
                     try {
@@ -163,13 +122,11 @@
                             $timeRemaining = $bookingDateTime->diffForHumans(\Carbon\Carbon::now(), ['parts' => 2]);
                         }
                     } catch (\Exception $e) {
-                        // ignore
                     }
                 @endphp
                 
                 <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm transition-all duration-300 hover:transform hover:-translate-y-2 hover:border-emerald-500/40 group" 
                      data-booking-id="{{ $booking->id }}">
-                    <!-- Header -->
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 
@@ -190,7 +147,6 @@
                             </div>
                         </div>
                         
-                        <!-- Status Badge -->
                         <span class="px-3 py-1 rounded-full text-xs font-semibold
                             @if($booking->status == 'confirmed') bg-green-500/20 text-green-300 border border-green-500/30
                             @elseif($booking->status == 'pending' || $booking->status == 'pending_verification') bg-yellow-500/20 text-yellow-300 border border-yellow-500/30
@@ -216,7 +172,6 @@
                         </span>
                     </div>
 
-                    <!-- Booking Details -->
                     <div class="space-y-3 mb-6">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-2 text-gray-300">
@@ -252,7 +207,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment Status -->
                     <div class="mb-4">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-2">
@@ -291,7 +245,6 @@
                         </div>
                     </div>
 
-                    <!-- Price & Actions -->
                     <div class="flex items-center justify-between pt-4 border-t border-gray-700/50">
                         <div>
                             <div class="text-2xl font-black text-emerald-300">
@@ -300,24 +253,20 @@
                             <div class="text-gray-400 text-xs">Total Biaya</div>
                         </div>
                         
-                        <!-- Action Buttons -->
                         <div class="flex space-x-2">
                             @if(($booking->status == 'pending' || $booking->status == 'pending_verification') && $booking->payment_status == 'pending')
-                            <!-- TOMBOL BAYAR -->
                             <a href="{{ route('booking.payment.form', $booking->id) }}" 
                                class="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1 border border-emerald-500/30 flex items-center space-x-2">
                                 <i class="fas fa-credit-card text-xs"></i>
                                 <span>Bayar</span>
                             </a>
                             @elseif($booking->payment_status == 'pending_verification')
-                            <!-- STATUS PEMBAYARAN -->
                             <a href="{{ route('booking.payment.success', $booking->id) }}" 
                                class="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1 border border-yellow-500/30 flex items-center space-x-2">
                                 <i class="fas fa-clock text-xs"></i>
                                 <span>Status</span>
                             </a>
                             @elseif($booking->payment_status == 'failed' || $booking->status == 'cancelled')
-                            <!-- BAYAR ULANG -->
                             <a href="{{ route('booking.payment.form', $booking->id) }}" 
                                class="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1 border border-red-500/30 flex items-center space-x-2">
                                 <i class="fas fa-redo text-xs"></i>
@@ -326,7 +275,6 @@
                             @endif
                             
                             @if($booking->status == 'pending' || $booking->status == 'pending_verification')
-                            <!-- TOMBOL BATAL -->
                             <form method="POST" action="{{ route('booking.cancel', $booking->id) }}" class="inline">
                                 @csrf
                                 <button type="submit" 
@@ -337,7 +285,6 @@
                             </form>
                             @endif
                             
-                            <!-- DETAILS BUTTON -->
                             <button onclick="viewDetails({{ $booking->id }})" 
                                     class="bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1 border border-cyan-500/30">
                                 Detail
@@ -345,7 +292,6 @@
                         </div>
                     </div>
 
-                    <!-- Additional Info -->
                     <div class="mt-4 pt-4 border-t border-gray-700/50 text-xs text-gray-400">
                         <div class="flex justify-between">
                             <span>ID: #{{ $booking->id }}</span>
@@ -359,18 +305,8 @@
                             @endif
                         </div>
                         @endif
-                        
-                        <!-- Debug info untuk rating -->
-                        @if((env('APP_DEBUG') || request()->has('debug')) && $booking->status == 'confirmed' && $booking->payment_status == 'paid')
-                        <div class="mt-2 pt-2 border-t border-gray-700/30 text-[10px] text-gray-500">
-                            @foreach($ratingDebug as $debug)
-                            <div>{{ $debug }}</div>
-                            @endforeach
-                        </div>
-                        @endif
                     </div>
 
-                    <!-- Virtual Account Info (jika sudah bayar) -->
                     @if($booking->virtual_account && $booking->payment_status == 'pending_verification')
                     <div class="mt-4 p-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/20">
                         <div class="flex items-center justify-between">
@@ -392,7 +328,6 @@
                     </div>
                     @endif
 
-                    <!-- ====================== RATING SECTION FIX ====================== -->
                     @if($canRate && !$hasRating)
                     <div class="mt-4 pt-4 border-t border-yellow-500/20">
                         <a href="{{ route('rating.create', $booking->id) }}" 
@@ -400,11 +335,6 @@
                             <i class="fas fa-star"></i>
                             <span>Beri Rating</span>
                         </a>
-                        @if(env('APP_DEBUG') || request()->has('debug'))
-                        <div class="mt-2 text-center text-[10px] text-yellow-300">
-                            ✅ BISA RATING - {{ $booking->status }} / {{ $booking->payment_status }}
-                        </div>
-                        @endif
                     </div>
                     @elseif($hasRating)
                     <div class="mt-4 pt-4 border-t border-green-500/20">
@@ -412,7 +342,6 @@
                             <i class="fas fa-check-circle mr-2"></i>
                             <span>Sudah diberi rating</span>
                         </div>
-                        <!-- Tombol lihat rating jika sudah ada -->
                         @php
                             $existingRating = \App\Models\Rating::where('booking_id', $booking->id)->first();
                         @endphp
@@ -431,7 +360,6 @@
                         @endif
                     </div>
                     @elseif($booking->status === 'confirmed' && $booking->payment_status === 'paid' && !$isPast)
-                    <!-- Info waktu booking belum lewat -->
                     <div class="mt-4 pt-4 border-t border-gray-700/30">
                         <div class="text-center text-gray-400 text-sm">
                             <i class="fas fa-clock mr-1"></i>
@@ -439,7 +367,6 @@
                         </div>
                     </div>
                     @elseif($booking->status === 'confirmed' && $booking->payment_status !== 'paid')
-                    <!-- Info payment belum paid -->
                     <div class="mt-4 pt-4 border-t border-gray-700/30">
                         <div class="text-center text-gray-400 text-sm">
                             <i class="fas fa-info-circle mr-1"></i>
@@ -447,12 +374,10 @@
                         </div>
                     </div>
                     @endif
-                    <!-- ====================== END RATING SECTION ====================== -->
                 </div>
                 @endforeach
             </div>
 
-            <!-- Booking Summary -->
             <div class="bg-gradient-to-br from-gray-800/40 to-gray-900/40 rounded-3xl p-6 border border-emerald-500/20 backdrop-blur-sm">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
@@ -477,7 +402,6 @@
     </div>
 </div>
 
-<!-- Modal Details -->
 <div id="bookingModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
     <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 max-w-md w-full border border-emerald-500/30">
         <div class="flex justify-between items-center mb-6">
@@ -485,13 +409,11 @@
             <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <div id="modalContent" class="text-gray-300">
-            <!-- Content akan diisi oleh JavaScript -->
         </div>
     </div>
 </div>
 
 <script>
-// View Details Function
 async function viewDetails(bookingId) {
     const modal = document.getElementById('bookingModal');
     const content = document.getElementById('modalContent');
@@ -509,15 +431,12 @@ async function viewDetails(bookingId) {
     modal.classList.add('flex');
     
     try {
-        // Fetch booking details via API atau langsung dari data yang ada
-        // Karena API mungkin belum ada, kita pakai cara sederhana
         const bookingCard = document.querySelector(`[data-booking-id="${bookingId}"]`);
         
         if (!bookingCard) {
             throw new Error('Booking tidak ditemukan');
         }
         
-        // Ambil data dari card yang ada
         const fieldName = bookingCard.querySelector('h3').textContent.trim();
         const fieldType = bookingCard.querySelector('.text-emerald-300').textContent.trim();
         const date = bookingCard.querySelectorAll('.text-gray-300 span')[0].textContent.trim();
@@ -526,7 +445,6 @@ async function viewDetails(bookingId) {
         const price = bookingCard.querySelector('.text-emerald-300.text-2xl').textContent.trim();
         const paymentStatus = bookingCard.querySelector('.text-sm.font-semibold').textContent.trim();
         
-        // Format the details
         content.innerHTML = `
             <div class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
@@ -612,10 +530,8 @@ function closeModal() {
     modal.classList.remove('flex');
 }
 
-// Copy to Clipboard
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        // Show notification
         const notification = document.createElement('div');
         notification.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded-xl shadow-lg border border-emerald-400/30 animate-fade-in-up z-50';
         notification.innerHTML = `
@@ -634,7 +550,6 @@ function copyToClipboard(text) {
     });
 }
 
-// Animate cards on scroll
 document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
@@ -655,11 +570,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Debug function untuk testing rating
 function testRating(bookingId) {
     console.log('Testing rating untuk booking:', bookingId);
     
-    // Coba akses route rating
     fetch(`/rating/${bookingId}/create`, {
         method: 'GET',
         headers: {

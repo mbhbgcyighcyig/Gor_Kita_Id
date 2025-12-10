@@ -6,10 +6,8 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black py-8">
     <div class="max-w-4xl mx-auto px-4">
 
-        <!-- Header dengan Tombol Kembali -->
         <div class="text-center mb-8 relative">
 
-            <!-- Back Button -->
             <div class="absolute left-0 top-1/2 transform -translate-y-1/2">
                 <a href="{{ url()->previous() }}" 
                    class="inline-flex items-center space-x-2 bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-full px-4 py-2 border border-gray-600/30 transition-all duration-300 group">
@@ -32,11 +30,9 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Left Column - Booking Details -->
             <div class="lg:col-span-2">
                 <div class="glass-card rounded-3xl p-8 border border-emerald-500/20">
 
-                    <!-- Field Info -->
                     <div class="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-2xl p-6 border border-emerald-500/30 mb-8">
                         <div class="flex items-center space-x-4">
                             <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center border border-emerald-400/30">
@@ -61,13 +57,11 @@
                         </div>
                     </div>
 
-                    <!-- Booking Details -->
                     <div class="space-y-6">
                         <h3 class="text-xl font-black text-white mb-4">Detail Booking</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                            <!-- Date -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
@@ -82,7 +76,6 @@
                                 </div>
                             </div>
 
-                            <!-- Time -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-cyan-500/20 rounded-2xl flex items-center justify-center">
@@ -103,7 +96,6 @@
                                 </div>
                             </div>
 
-                            <!-- Duration -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
@@ -116,7 +108,6 @@
                                 </div>
                             </div>
 
-                            <!-- Field Type -->
                             <div class="glass-card rounded-2xl p-4 border border-gray-700/50">
                                 <div class="flex items-center space-x-3 mb-2">
                                     <div class="w-10 h-10 bg-cyan-500/20 rounded-2xl flex items-center justify-center">
@@ -131,7 +122,6 @@
 
                         </div>
 
-                        <!-- Payment Notice -->
                         <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-2xl p-4 border border-yellow-500/30 mt-6">
                             <div class="flex items-start space-x-3">
                                 <i class="fas fa-exclamation-circle text-yellow-400 text-xl mt-1"></i>
@@ -149,11 +139,9 @@
                 </div>
             </div>
 
-            <!-- Right Column -->
             <div class="lg:col-span-1">
                 <div class="sticky top-8 space-y-6">
 
-                    <!-- Order Summary -->
                     <div class="glass-card rounded-3xl p-6 border border-emerald-500/20">
                         <h3 class="text-xl font-black text-white mb-4">Ringkasan Pesanan</h3>
 
@@ -191,7 +179,6 @@
                         </div>
                     </div>
 
-                    <!-- Action -->
                     <div class="glass-card rounded-3xl p-6 border border-emerald-500/20">
 
                         <form action="{{ route('booking.process') }}" method="POST" id="bookingForm">
@@ -204,7 +191,6 @@
                             <input type="hidden" name="duration" value="{{ $duration }}">
                             <input type="hidden" name="total_price" value="{{ $totalPrice }}">
 
-                            <!-- Optional Notes -->
                             <div class="mb-4">
                                 <label class="block text-gray-400 text-sm font-semibold mb-2">
                                     Catatan (Opsional)
@@ -237,7 +223,6 @@
 
                     </div>
 
-                    <!-- Payment Steps -->
                     <div class="glass-card rounded-3xl p-6 border border-cyan-500/20">
                         <h4 class="text-lg font-black text-white mb-4 flex items-center">
                             <i class="fas fa-credit-card text-cyan-400 mr-2"></i>
@@ -277,7 +262,6 @@
                         </div>
                     </div>
 
-                    <!-- Help -->
                     <div class="bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 rounded-3xl p-6 border border-cyan-500/20">
                         <h4 class="text-lg font-black text-white mb-4 flex items-center">
                             <i class="fas fa-headset text-cyan-400 mr-2"></i>
@@ -326,12 +310,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnText = document.getElementById('btnText');
     
     bookingForm.addEventListener('submit', function(e) {
-        // Show loading state
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-70');
         btnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>MEMPROSES...';
-        
-        // The form will submit normally
     });
 });
 </script>

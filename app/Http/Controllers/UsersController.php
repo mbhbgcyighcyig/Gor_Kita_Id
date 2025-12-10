@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class UsersController extends Controller
 {
     /**
-     * Display a listing of the users.
+     * Tampil semua user (non-admin)
      */
     public function index()
     {
@@ -17,7 +17,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Show the form for creating a new user.
+     * Form buat user baru
      */
     public function create()
     {
@@ -25,7 +25,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Store a newly created user in storage.
+     * Simpan user baru
      */
     public function store(Request $request)
     {
@@ -43,11 +43,11 @@ class UsersController extends Controller
             'role' => $request->role
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil dibuat!');
+        return redirect()->route('admin.users.index')->with('success', 'User dibuat!');
     }
 
     /**
-     * Display the specified user.
+     * Detail user
      */
     public function show(User $user)
     {
@@ -55,7 +55,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified user.
+     * Form edit user
      */
     public function edit(User $user)
     {
@@ -63,7 +63,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Update the specified user in storage.
+     * Update user
      */
     public function update(Request $request, User $user)
     {
@@ -86,31 +86,28 @@ class UsersController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')->with('success', 'User berhasil diupdate!');
+        return redirect()->route('admin.users.index')->with('success', 'User updated!');
     }
 
     /**
-     * Remove the specified user from storage.
-     * PAKAI SALAH SATU SAJA - INI YANG RECOMMENDED
+     * Hapus user
      */
     public function destroy($id)
     {
         try {
-            // Cari user berdasarkan ID
             $user = User::findOrFail($id);
             
-            // Cek jika user mencoba menghapus dirinya sendiri
-            if ($user->id === auth()->id()) {
-                return redirect()->back()->with('error', 'Tidak bisa menghapus akun sendiri!');
+            // Cek kalo hapus akun sendiri
+            if ($user->id === session('user_id')) {
+                return redirect()->back()->with('error', 'Ga bisa hapus akun sendiri!');
             }
             
-            // Hapus user
             $user->delete();
             
-            return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus!');
+            return redirect()->route('admin.users.index')->with('success', 'User dihapus!');
             
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal hapus user');
         }
     }
 }

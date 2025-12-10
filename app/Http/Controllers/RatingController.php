@@ -6,25 +6,23 @@ use App\Models\Booking;
 use App\Models\Rating;
 use App\Models\Lapangan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class RatingController extends Controller
 {
     /**
-     * Tampilkan semua rating publik (halaman utama rating)
+     * Tampil semua rating (public)
      */
     public function index()
     {
-        // Tampilkan semua rating untuk semua orang (public)
+        // Ambil rating yang ada review
         $ratings = Rating::with(['user', 'field', 'booking'])
                         ->latest()
                         ->whereNotNull('review')
                         ->where('review', '!=', '')
                         ->paginate(12);
         
-        // Hitung statistik
+        // Statistik
         $totalRatings = Rating::count();
         $averageRating = Rating::avg('rating');
         $recentRatings = Rating::with('user')
@@ -36,15 +34,15 @@ class RatingController extends Controller
     }
     
     /**
-     * Tampilkan rating saya (hanya untuk user login)
+     * Rating saya (user login)
      */
     public function myRatings()
     {
-        $userId = Auth::check() ? Auth::id() : session('user_id');
+        $userId = session('user_id');
         
         if (!$userId) {
             return redirect()->route('login')
-                ->with('error', 'Silakan login terlebih dahulu untuk melihat rating Anda.');
+                ->with('error', 'Login dulu bro!');
         }
         
         $ratings = Rating::with(['field', 'booking'])
@@ -56,7 +54,7 @@ class RatingController extends Controller
     }
     
     /**
-     * Tampilkan rating untuk lapangan tertentu
+     * Rating per lapangan
      */
     public function fieldRatings($fieldId)
     {
@@ -73,78 +71,68 @@ class RatingController extends Controller
     }
     
     /**
-     * Tampilkan form buat rating
+     * Form buat rating
      */
     public function create($bookingId)
     {
         try {
             $booking = Booking::with('lapangan')->findOrFail($bookingId);
             
-            $userId = Auth::check() ? Auth::id() : (session('user_id') ?? null);
+            $userId = session('user_id');
             
             if (!$userId) {
                 return redirect()->route('login')
-                    ->with('error', 'Silakan login terlebih dahulu.');
+                    ->with('error', 'Login dulu!');
             }
             
-            // Validasi apakah booking bisa di-rating
+            // Cek bisa rating atau nggak
             $canRate = $this->canRateBooking($booking);
             if (!$canRate['can_rate']) {
                 return redirect()->route('rating.index')
                     ->with('error', $canRate['message']);
             }
             
-            // Cek rating existing
+            // Cek rating udah ada
             $existingRating = Rating::where('booking_id', $bookingId)->first();
             if ($existingRating) {
                 return redirect()->route('rating.my-ratings')
-                    ->with('info', 'Anda sudah memberikan rating untuk booking ini.');
+                    ->with('info', 'Udah kasih rating buat booking ini.');
             }
             
             return view('rating.create', compact('booking'));
             
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->route('rating.index')
-                ->with('error', 'Booking tidak ditemukan.');
         } catch (\Exception $e) {
             Log::error('Rating create error: ' . $e->getMessage());
             return redirect()->route('rating.index')
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Booking ga ketemu.');
         }
     }
     
     /**
-     * Simpan rating baru
+     * Simpan rating
      */
     public function store(Request $request, $bookingId)
     {
         try {
             $booking = Booking::with('lapangan')->findOrFail($bookingId);
             
-            $userId = Auth::check() ? Auth::id() : (session('user_id') ?? null);
+            $userId = session('user_id');
             
             if (!$userId) {
                 return redirect()->route('login')
-                    ->with('error', 'Silakan login terlebih dahulu.');
+                    ->with('error', 'Login dulu!');
             }
             
-            Log::info('RATING STORE:', [
-                'booking_id' => $bookingId,
-                'user_id' => $userId,
-                'rating' => $request->rating,
-                'review_length' => strlen($request->review ?? '')
-            ]);
-            
-            // Validasi apakah booking bisa di-rating
+            // Cek bisa rating
             $canRate = $this->canRateBooking($booking);
             if (!$canRate['can_rate']) {
                 return back()->with('error', $canRate['message']);
             }
             
-            // Cek rating existing
+            // Cek rating udah ada
             $existingRating = Rating::where('booking_id', $bookingId)->first();
             if ($existingRating) {
-                return back()->with('error', 'Anda sudah memberikan rating untuk booking ini.');
+                return back()->with('error', 'Udah kasih rating buat booking ini.');
             }
             
             // Validasi input
@@ -153,7 +141,7 @@ class RatingController extends Controller
                 'review' => 'nullable|string|max:500',
             ]);
             
-            // Data untuk rating
+            // Buat rating
             $ratingData = [
                 'booking_id' => $bookingId,
                 'user_id' => $userId,
@@ -162,79 +150,67 @@ class RatingController extends Controller
                 'review' => $request->review ?? '',
             ];
             
-            // Create rating
             $rating = Rating::create($ratingData);
             
-            // Update average rating di lapangan
+            // Update rating lapangan
             $this->updateLapanganRating($booking->lapangan_id);
             
-            Log::info('Rating created successfully:', [
-                'rating_id' => $rating->id,
-                'booking_id' => $bookingId,
-                'field_id' => $booking->lapangan_id
-            ]);
-            
             return redirect()->route('booking.my-bookings')
-                ->with('success', 'Terima kasih atas rating Anda! 🎉');
+                ->with('success', 'Thanks for rating!');
                 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return back()->with('error', 'Booking tidak ditemukan.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors());
         } catch (\Exception $e) {
             Log::error('Rating store error: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return back()->with('error', 'Gagal simpan rating.');
         }
     }
     
     /**
-     * Tampilkan form edit rating
+     * Form edit rating
      */
     public function edit($id)
     {
         try {
             $rating = Rating::with(['booking', 'field'])->findOrFail($id);
             
-            $userId = Auth::check() ? Auth::id() : (session('user_id') ?? null);
+            $userId = session('user_id');
             
             if (!$userId) {
                 return redirect()->route('login')
-                    ->with('error', 'Silakan login terlebih dahulu.');
+                    ->with('error', 'Login dulu!');
             }
             
-            // Validasi: hanya user yang membuat rating bisa edit
+            // Cek punya rating
             if ($rating->user_id != $userId) {
                 return redirect()->route('rating.my-ratings')
-                    ->with('error', 'Anda tidak memiliki akses untuk mengedit rating ini.');
+                    ->with('error', 'Bukan rating lu!');
             }
             
             return view('rating.edit', compact('rating'));
             
         } catch (\Exception $e) {
-            Log::error('Rating edit error: ' . $e->getMessage());
             return redirect()->route('rating.my-ratings')
-                ->with('error', 'Rating tidak ditemukan.');
+                ->with('error', 'Rating ga ketemu.');
         }
     }
     
     /**
-     * Update rating yang sudah ada
+     * Update rating
      */
     public function update(Request $request, $id)
     {
         try {
             $rating = Rating::with('booking')->findOrFail($id);
             
-            $userId = Auth::check() ? Auth::id() : (session('user_id') ?? null);
+            $userId = session('user_id');
             
             if (!$userId) {
                 return redirect()->route('login')
-                    ->with('error', 'Silakan login terlebih dahulu.');
+                    ->with('error', 'Login dulu!');
             }
             
-            // Validasi: hanya user yang membuat rating bisa update
+            // Cek punya rating
             if ($rating->user_id != $userId) {
-                return back()->with('error', 'Anda tidak memiliki akses untuk mengupdate rating ini.');
+                return back()->with('error', 'Bukan rating lu!');
             }
             
             $request->validate([
@@ -248,15 +224,14 @@ class RatingController extends Controller
                 'review' => $request->review ?? '',
             ]);
             
-            // Update average rating di lapangan
+            // Update rating lapangan
             $this->updateLapanganRating($rating->field_id);
             
             return redirect()->route('rating.my-ratings')
-                ->with('success', 'Rating berhasil diperbarui!');
+                ->with('success', 'Rating berhasil diupdate!');
                 
         } catch (\Exception $e) {
-            Log::error('Rating update error: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan.');
+            return back()->with('error', 'Gagal update.');
         }
     }
     
@@ -268,42 +243,40 @@ class RatingController extends Controller
         try {
             $rating = Rating::findOrFail($id);
             
-            $userId = Auth::check() ? Auth::id() : (session('user_id') ?? null);
+            $userId = session('user_id');
             
             if (!$userId) {
-                return response()->json(['error' => 'Silakan login terlebih dahulu.'], 401);
+                return response()->json(['error' => 'Login dulu!'], 401);
             }
             
             if ($rating->user_id != $userId) {
-                return response()->json(['error' => 'Anda tidak memiliki akses.'], 403);
+                return response()->json(['error' => 'Bukan rating lu!'], 403);
             }
             
             $fieldId = $rating->field_id;
             $rating->delete();
             
-            // Update average rating di lapangan
+            // Update rating lapangan
             $this->updateLapanganRating($fieldId);
             
             return response()->json([
                 'success' => true,
-                'message' => 'Rating berhasil dihapus'
+                'message' => 'Rating dihapus'
             ]);
             
         } catch (\Exception $e) {
-            Log::error('Rating delete error: ' . $e->getMessage());
-            return response()->json(['error' => 'Terjadi kesalahan.'], 500);
+            return response()->json(['error' => 'Gagal hapus.'], 500);
         }
     }
     
     /**
-     * Admin ratings page
+     * Admin page rating
      */
     public function adminIndex()
     {
-        // Hanya untuk admin
         if (session('user_role') !== 'admin') {
             return redirect()->route('rating.index')
-                ->with('error', 'Anda tidak memiliki akses ke halaman admin.');
+                ->with('error', 'Bukan admin!');
         }
         
         $ratings = Rating::with(['user', 'field'])
@@ -314,63 +287,43 @@ class RatingController extends Controller
     }
     
     /**
-     * Cek apakah booking bisa di-rating
+     * Cek bisa rating booking
      */
     private function canRateBooking(Booking $booking): array
     {
-        // 1. Cek status booking
+        // Status yang bisa rating
         $allowedStatuses = ['completed', 'confirmed'];
         if (!in_array($booking->status, $allowedStatuses)) {
             return [
                 'can_rate' => false,
-                'message' => 'Hanya booking yang sudah selesai atau confirmed yang bisa diberi rating.'
+                'message' => 'Cuma booking yang udah selesai bisa rating.'
             ];
         }
         
-        // 2. Cek payment status untuk confirmed bookings
+        // Cek payment
         if ($booking->status === 'confirmed' && $booking->payment_status !== 'paid') {
             return [
                 'can_rate' => false,
-                'message' => 'Harap selesaikan pembayaran sebelum memberi rating.'
+                'message' => 'Bayar dulu baru rating.'
             ];
         }
         
-        // 3. Cek waktu untuk confirmed bookings
+        // Cek waktu
         if ($booking->status === 'confirmed') {
-            try {
-                $endTime = Carbon::parse($booking->tanggal_booking . ' ' . $booking->jam_selesai);
-                $now = Carbon::now();
-                
-                // Jika waktu belum lewat, tidak bisa rating
-                if (!$endTime->isPast()) {
-                    $timeRemaining = $endTime->diffForHumans($now, ['parts' => 2]);
-                    return [
-                        'can_rate' => false,
-                        'message' => "Anda bisa memberi rating setelah booking selesai (tersisa $timeRemaining)."
-                    ];
-                }
-            } catch (\Exception $e) {
-                Log::error('Error parsing booking time: ' . $e->getMessage());
+            $endTime = \Carbon\Carbon::parse($booking->tanggal_booking . ' ' . $booking->jam_selesai);
+            
+            if (!$endTime->isPast()) {
                 return [
                     'can_rate' => false,
-                    'message' => 'Data waktu booking tidak valid.'
+                    'message' => 'Rating setelah booking selesai.'
                 ];
             }
         }
-        
-        // 4. Cek jika booking cancelled
-        if ($booking->status === 'cancelled') {
+      
+        if ($booking->status === 'cancelled' || $booking->status === 'expired') {
             return [
                 'can_rate' => false,
-                'message' => 'Booking yang dibatalkan tidak bisa diberi rating.'
-            ];
-        }
-        
-        // 5. Cek jika booking expired
-        if ($booking->status === 'expired') {
-            return [
-                'can_rate' => false,
-                'message' => 'Booking yang expired tidak bisa diberi rating.'
+                'message' => 'Booking batal/expired ga bisa rating.'
             ];
         }
         
@@ -381,17 +334,14 @@ class RatingController extends Controller
     }
     
     /**
-     * Update rating rata-rata lapangan
+     * Update rating lapangan
      */
     private function updateLapanganRating($lapanganId): void
     {
         try {
             $lapangan = Lapangan::find($lapanganId);
             
-            if (!$lapangan) {
-                Log::warning("Lapangan ID {$lapanganId} not found");
-                return;
-            }
+            if (!$lapangan) return;
             
             $ratings = Rating::where('field_id', $lapanganId);
             $averageRating = $ratings->avg('rating');
@@ -403,7 +353,7 @@ class RatingController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('Update lapangan rating error: ' . $e->getMessage());
+            Log::error('Update rating lapangan error: ' . $e->getMessage());
         }
     }
 }

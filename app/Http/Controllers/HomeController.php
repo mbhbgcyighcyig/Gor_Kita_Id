@@ -14,9 +14,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            // JANGAN REDIRECT KE LOGIN DULU!
-            // Biarkan user akses home meskipun belum login
-            
+
             $user_id = session('user_id');
             $user_role = session('user_role', 'user');
             
@@ -25,7 +23,7 @@ class HomeController extends Controller
                 return redirect('/admin/dashboard');
             }
             
-            // INISIALISASI STATS DEFAULT
+            //  INSTAL STASTIK
             $stats = [
                 'total_bookings' => 0,
                 'active_bookings' => 0,
@@ -43,7 +41,7 @@ class HomeController extends Controller
                     ->count();
             }
             
-            // AMBIL DATA LAPANGAN (untuk semua user, login atau tidak)
+            // AMBIL DATA LAPANGAN
             $futsalFields = Lapangan::where('type', 'futsal')
                 ->where('is_active', true)
                 ->get();
@@ -91,7 +89,7 @@ class HomeController extends Controller
     public function about()
     {
         try {
-            // About page bisa diakses tanpa login
+
             $totalFields = Lapangan::where('is_active', true)->count();
             $totalBookings = Booking::count();
             $averageRating = Rating::avg('rating') ?? 0;

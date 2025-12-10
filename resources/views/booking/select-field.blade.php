@@ -59,7 +59,7 @@
                     @endif
                 </a>
 
-                <!-- Mini Soccer - SUDAH DIPERBAIKI -->
+                <!-- Mini Soccer -->
                 <a href="{{ route('booking.select-field', ['type' => 'minisoccer', 'date' => $selectedDate]) }}" 
                    class="group relative overflow-hidden rounded-3xl p-8 text-center transition-all duration-500 transform hover:-translate-y-3 border-2 backdrop-blur-sm
                           {{ $type == 'minisoccer' ? 'bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-emerald-500/40 scale-105' : 'bg-white/5 border-white/10 hover:border-emerald-500/30' }}">
@@ -91,8 +91,7 @@
                         </p>
                     </div>
                 </div>
-
-                <!-- Date Picker Form -->
+                
                 <form action="{{ route('booking.select-field', ['type' => $type]) }}" method="GET" class="flex flex-col sm:flex-row gap-4 items-center">
                     <div class="relative">
                         <input type="date" 
@@ -110,7 +109,6 @@
             </div>
         </div>
 
-        <!-- Fields Grid -->
         @if($fields->count() > 0)
         <div class="mb-12">
             <div class="text-center mb-10">
@@ -125,14 +123,11 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                 @foreach($fields as $field)
                 @php
-                    // Sistem gambar berdasarkan type lapangan
                     $fieldImage = null;
                     
-                    // Cek apakah ada gambar dari database
                     if (!empty($field->image) && file_exists(public_path($field->image))) {
                         $fieldImage = asset($field->image);
                     } else {
-                        // Fallback ke gambar lokal berdasarkan tipe
                         $localImages = [
                             'badminton' => [
                                 asset('badminton/bad1.jpg'),
@@ -156,7 +151,6 @@
                         $fieldImage = $imageList[$loop->index % count($imageList)];
                     }
                     
-                    // Tentukan ikon berdasarkan tipe
                     $fieldIcon = 'fa-running';
                     if ($type == 'badminton') {
                         $fieldIcon = 'fa-table-tennis-paddle-ball';
@@ -164,7 +158,6 @@
                         $fieldIcon = 'fa-futbol';
                     }
                     
-                    // Tentukan warna berdasarkan tipe
                     $gradientFrom = 'from-emerald-500';
                     $gradientTo = 'to-cyan-500';
                     if ($type == 'futsal') {
@@ -246,7 +239,6 @@
                         <div class="flex items-center justify-between pt-6 border-t border-gray-700/50">
                             <div>
                                 @php
-                                    // Tentukan harga berdasarkan tipe
                                     $price = $field->price_per_hour ?? 40000;
                                     if ($type == 'futsal') {
                                         $price = $field->price_per_hour ?? 150000;
@@ -333,9 +325,7 @@
 </div>
 
 <script>
-    // Enhanced animations with stagger
     document.addEventListener('DOMContentLoaded', function() {
-        // Scroll animations with stagger
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -352,7 +342,6 @@
             });
         }, observerOptions);
 
-        // Observe all groups with stagger
         document.querySelectorAll('.group').forEach((el, index) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
@@ -360,7 +349,6 @@
             observer.observe(el);
         });
 
-        // Add hover effects to cards
         const cards = document.querySelectorAll('.bg-gradient-to-br');
         cards.forEach(card => {
             card.addEventListener('mouseenter', function() {

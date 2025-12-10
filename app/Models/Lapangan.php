@@ -23,13 +23,11 @@ class Lapangan extends Model
         'is_active' => 'boolean'
     ];
 
-    // ✅ RELASI KE BOOKINGS DENGAN FOREIGN KEY LAPANGAN_ID
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'lapangan_id');
     }
-    
-    // ✅ ACCESSOR UNTUK COMPATIBILITY
+  
     public function getNamaLapanganAttribute()
     {
         return $this->name ?? "Lapangan {$this->type}";
