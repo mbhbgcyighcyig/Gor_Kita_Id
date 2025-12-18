@@ -37,8 +37,7 @@
             <i class="fas fa-chart-bar w-6 text-center"></i>
             <span>Laporan</span>
         </a>
-
-        <!-- PERBAIKI INI: route yang benar dan icon yang sesuai -->
+        
         <a href="{{ route('admin.pengaturan') }}" class="flex items-center space-x-3 p-3 rounded-lg transition hover:bg-red-500/10 {{ request()->routeIs('admin.pengaturan') ? 'active' : '' }}">
             <i class="fas fa-cog w-6 text-center"></i>
             <span>Pengaturan</span>
