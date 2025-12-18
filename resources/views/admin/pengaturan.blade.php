@@ -161,7 +161,7 @@
                         </div>
                     </div>
 
-                    <!-- Section Notifikasi -->
+                    <!-- Notifikasi -->
                     <div class="mb-8">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Notifikasi</h3>
                         <div class="space-y-4">
