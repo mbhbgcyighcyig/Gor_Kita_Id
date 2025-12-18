@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <!-- Alert Messages -->
+            <!-- status -->
             @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 animate-pulse">
                 <i class="fas fa-check-circle mr-2"></i>
@@ -148,7 +148,7 @@
                     </div>
                 </div>
                 
-                <!-- Paid Payments -->
+                <!-- Payment -->
                 <div class="stat-card bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
@@ -446,10 +446,8 @@
     
     // Auto refresh setiap 30 detik untuk update status
     setInterval(function() {
-        // Cek jika ada pending_verification, refresh halaman
         const hasPending = document.querySelector('[data-status="pending_verification"], [data-status="pending"]');
         if (hasPending) {
-            // Hanya refresh jika user tidak sedang interaksi
             if (!document.querySelector('button:hover, form:hover')) {
                 location.reload();
             }
@@ -459,7 +457,6 @@
     // Debug function
     function debugBooking(id) {
         alert('Debug Booking #' + id);
-        // Bisa ditambahkan fetch request untuk debug
     }
     </script>
 </body>
